@@ -1,12 +1,12 @@
 .row {
-	display: flex;
-	flex-direction:row;
+    display: flex;
+    flex-direction:row;
 }
 
 .row ~ .row{
-	margin-top: -67px;
+    margin-top: -67px;
 }
 
 .row:nth-child(even) {
-	margin-left: 50px;
+    margin-left: 50px;
 }

@@ -6,6 +6,7 @@ class FormLogic {
         FormLogic.#getColorPickerSelectElement().onchange = FormLogic.#onChangeColorPickerSelect;
         FormLogic.#getAddRowElement().onclick = FormLogic.#onClickAddRow;
         FormLogic.#getAddColumnElement().onclick = FormLogic.#onClickAddColumn;
+        FormLogic.#getClearElement().onclick = FormLogic.#onClickClear;
     }
     
     static #onChangeColorPickerSelect(event) {
@@ -19,6 +20,10 @@ class FormLogic {
 
     static #onClickAddColumn() {
         FormLogic.#chainmailLogic.AddColumn();
+    }
+    
+    static #onClickClear() {
+        FormLogic.#chainmailLogic.Clear();
     }
 
     static #getColorPickerSelectElement() {
@@ -36,11 +41,15 @@ class FormLogic {
     static #getAddColumnElement() {
         return document.getElementById('add-column');
     }
+    
+    static #getClearElement() {
+        return document.getElementById('clear');
+    }
 }
 
 /*
   form action wishlist:
     - click and drag to change metals as you hover
-	- toggle corner rings (those ones with only one connection, stragglers)
+    - toggle corner rings (those ones with only one connection, stragglers)
     - zoom out
 */

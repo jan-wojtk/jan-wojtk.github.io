@@ -10,6 +10,10 @@ class ChainmailLogic {
         this.#addColumn();
     }
     
+    Clear() {
+        this.#clear();
+    }
+    
     #addColumn() {
         var rows = this.#getChainmailRowElements();
         var rowCount = rows.length;
@@ -84,6 +88,15 @@ class ChainmailLogic {
         return `
             <div class="row"></div>
         `;
+    }
+    
+    #clear() {
+        const container = this.#getChainmailContainerElement();
+        
+        // google told me this makes sense and i believe it
+        while (container.lastChild) {
+          container.removeChild(container.lastChild);
+        }
     }
     
     // todo: make constants out of selector strings
