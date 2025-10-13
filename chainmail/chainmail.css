@@ -4,9 +4,9 @@
 }
 
 .row ~ .row{
-    margin-top: -67px;
+    margin-top: -33.333px;
 }
 
 .row:nth-child(even) {
-    margin-left: 50px;
+    margin-left: 25px;
 }

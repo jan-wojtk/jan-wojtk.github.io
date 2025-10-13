@@ -2,14 +2,14 @@
     border-color: sandybrown;
     outline: 1px solid #888888;
     border-radius: 50%;
-    height: 100px;
-    width: 100px;
+    height: 50px;
+    width: 50px;
 }
 
 .ring-partial {
     border-color: inherit;
     overflow: hidden;
-    height: 33.33px;
+    height: 16.667px;
     width: 100px;
 }
 
@@ -17,11 +17,11 @@
     border-color: inherit;
     border-radius: 50%;
     border-style: solid;
-    border-width: 18px;
-    height: 64px;
+    border-width: 9px;
+    height: 32px;
     outline: 1px solid #888888;
-    outline-offset: -18px;
-    width: 64px;
+    outline-offset: -9px;
+    width: 32px;
 }
 
 .ring-partial .ring {
@@ -33,12 +33,12 @@
 }
 
 .ring-partial.ring-partial_middle .ring {
-    margin-top: -33.33px;
+    margin-top: -16.667px;
     z-index: 0;
 }
 
 .ring-partial.ring-partial_bottom .ring {
-    margin-top: -66.67px;
+    margin-top: -33.333px;
     z-index: -100;
 }
 
