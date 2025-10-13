@@ -6,10 +6,15 @@
     width: 50px;
 }
 
+#chainmail-container.explode-outline-offset .ring-container {
+    transition: outline-offset 5s ease-in-out;
+    outline-offset: 1000px;
+}
+
 .ring-partial {
     border-color: inherit;
     overflow: hidden;
-    height: 16.667px;
+    height: 16.66667px;
     width: 100px;
 }
 
@@ -24,6 +29,11 @@
     width: 32px;
 }
 
+#chainmail-container.explode-outline-offset .ring {
+    transition: outline-offset 5s ease-in-out;
+    outline-offset: 1000px;
+}
+
 .ring-partial .ring {
     position: relative;
 }
@@ -33,12 +43,12 @@
 }
 
 .ring-partial.ring-partial_middle .ring {
-    margin-top: -16.667px;
+    margin-top: -16.66667px;
     z-index: 0;
 }
 
 .ring-partial.ring-partial_bottom .ring {
-    margin-top: -33.333px;
+    margin-top: -33.33333px;
     z-index: -100;
 }
 

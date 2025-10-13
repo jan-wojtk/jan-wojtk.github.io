@@ -4,7 +4,10 @@
 }
 
 .row ~ .row{
-    margin-top: -33.333px;
+    /* don't sneeze, this value works perfect somehow */
+    /* (maybe) 2/3 of ring width + 2px */
+    /* could be related to the outline width */
+    margin-top: -35.33333px;
 }
 
 .row:nth-child(even) {

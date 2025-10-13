@@ -7,6 +7,7 @@ class FormLogic {
         FormLogic.#getAddRowElement().onclick = FormLogic.#onClickAddRow;
         FormLogic.#getAddColumnElement().onclick = FormLogic.#onClickAddColumn;
         FormLogic.#getClearElement().onclick = FormLogic.#onClickClear;
+        FormLogic.#getExplodeOutlineOffsetElement().onclick = FormLogic.#onClickExplodeOutlineOffset;
     }
     
     static #onChangeColorPickerSelect(event) {
@@ -24,6 +25,14 @@ class FormLogic {
     
     static #onClickClear() {
         FormLogic.#chainmailLogic.Clear();
+    }
+    
+    static #onClickExplodeOutlineOffset() {
+        FormLogic.#getChainmailContainerElement().classList.add('explode-outline-offset');
+        
+        setTimeout(() => {
+            FormLogic.#getChainmailContainerElement().classList.remove('explode-outline-offset');
+        }, 5000);
     }
 
     static #getColorPickerSelectElement() {
@@ -44,6 +53,14 @@ class FormLogic {
     
     static #getClearElement() {
         return document.getElementById('clear');
+    }
+    
+    static #getExplodeOutlineOffsetElement() {
+        return document.getElementById('explode-outline-offset');
+    }
+    
+    static #getChainmailContainerElement() {
+        return document.getElementById('chainmail-container');
     }
 }
 
