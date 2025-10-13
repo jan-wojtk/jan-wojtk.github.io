@@ -1,0 +1,52 @@
+.ring-container {
+	border-color: sandybrown;
+	outline: 1px solid #888888;
+	border-radius: 50%;
+	height: 100px;
+	width: 100px;
+}
+
+.ring-partial {
+	border-color: inherit;
+	overflow: hidden;
+	height: 33.33px;
+	width: 100px;
+}
+
+.ring {
+	border-color: inherit;
+	border-radius: 50%;
+	border-style: solid;
+	border-width: 18px;
+	height: 64px;
+	outline: 1px solid #888888;
+	outline-offset: -18px;
+	width: 64px;
+}
+
+.ring-partial .ring {
+	position: relative;
+}
+
+.ring-partial.ring-partial_top .ring {
+	z-index: 100;
+}
+
+.ring-partial.ring-partial_middle .ring {
+	margin-top: -33.33px;
+	z-index: 0;
+}
+
+.ring-partial.ring-partial_bottom .ring {
+	margin-top: -66.67px;
+	z-index: -100;
+}
+
+/* reverse the z-index rules above */
+.row:nth-child(even) .ring-container .ring-partial.ring-partial_top .ring {
+	z-index: -100;
+}
+
+.row:nth-child(even) .ring-container .ring-partial.ring-partial_bottom .ring {
+	z-index: 100;
+}

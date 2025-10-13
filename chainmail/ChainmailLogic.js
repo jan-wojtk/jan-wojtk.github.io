@@ -43,7 +43,7 @@ class ChainmailLogic {
         var rowCount = rows.length;
         
         if(rowCount === 0) {
-            appendRowToChainmail(1);
+            this.#appendRowToChainmail(1);
         }
         
         if(rowCount === 1) {
@@ -99,8 +99,3 @@ class ChainmailLogic {
         return document.getElementById('chainmail-container');
     }
 }
-
-window.Chainmail = {
-    ...window.Chainmail,
-    ChainmailLogic
-};

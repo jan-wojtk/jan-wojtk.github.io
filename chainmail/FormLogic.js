@@ -42,4 +42,5 @@ class FormLogic {
   form action wishlist:
     - click and drag to change metals as you hover
 	- toggle corner rings (those ones with only one connection, stragglers)
+    - zoom out
 */

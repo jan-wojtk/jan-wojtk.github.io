@@ -1,0 +1,29 @@
+.color-picker_container {
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+}
+
+.ring-container:hover {
+  border-color: lightcoral !important;
+}
+
+.ring-container:hover .ring {
+  z-index: 1000 !important;
+}
+
+/* todo: move over the inline styles */
+label {
+    font-weight: bold;
+}
+
+.color-picker_preview {
+    border: 0;
+    height: 30px;
+    padding: 0;
+    width: 27px;
+}
+
+.color-picker_select {
+    height: 23px;
+}
