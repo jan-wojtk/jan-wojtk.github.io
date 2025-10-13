@@ -1,3 +1,4 @@
+// todo: consider making this non-static. maybe toss in some render methods.
 class FormLogic {
     static #chainmailLogic = new ChainmailLogic();
 
