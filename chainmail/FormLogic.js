@@ -10,8 +10,8 @@ class FormLogic {
     }
     
     static #onChangeColorPickerSelect(event) {
-        var newValue = _getColorPickerSelectElement().value;
-        _getColorPickerPreviewElement().value = newValue;
+        var newValue = FormLogic.#getColorPickerSelectElement().value;
+        FormLogic.#getColorPickerPreviewElement().value = newValue;
     }
     
     static #onClickAddRow() {
