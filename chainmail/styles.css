@@ -1,0 +1,125 @@
+/*
+todo: use classes to avoid repetion of these values
+<option label="Brass" value="#e4d6af"></option>
+<option label="Bronze" value="#e1bd90"></option>
+<option label="Copper" value="#ffb99b"></option>
+<option label="Nickel" value="#d7d6dd"></option>
+*/
+body {
+	font-family: sans-serif;
+	font-size: 12px;
+	height: 100vh;
+	padding: 0;
+	margin: 0;
+	overflow-x: hidden;
+	width: 100vw;
+}
+
+#content {
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+	width: 100%;
+}
+
+#content > #form {
+	border-left: 1px dashed #cccccc;
+	padding: 10px;
+	width: 20%;
+}
+
+#content > #chainmail {
+	align-items: center;
+	display: flex;
+	height: 100%;
+	justify-content: center;
+	width: 80%;
+}
+
+.row {
+	display: flex;
+	flex-direction:row;
+}
+
+.row ~ .row{
+	margin-top: -67px;
+}
+
+.row:nth-child(even) {
+	margin-left: 50px;
+}
+
+/* BEGIN RING STRUCTURE */
+.ring-container {
+	border-color: sandybrown;
+	outline: 1px solid #888888;
+	border-radius: 50%;
+	height: 100px;
+	width: 100px;
+}
+
+.ring-partial {
+	border-color: inherit;
+	overflow: hidden;
+	height: 33.33px;
+	width: 100px;
+}
+
+.ring {
+	border-color: inherit;
+	border-radius: 50%;
+	border-style: solid;
+	border-width: 18px;
+	height: 64px;
+	outline: 1px solid #888888;
+	outline-offset: -18px;
+	width: 64px;
+}
+
+.ring-partial .ring {
+	position: relative;
+}
+
+.ring-partial.ring-partial_top .ring {
+	z-index: 100;
+}
+
+.ring-partial.ring-partial_middle .ring {
+	margin-top: -33.33px;
+	z-index: 0;
+}
+
+.ring-partial.ring-partial_bottom .ring {
+	margin-top: -66.67px;
+	z-index: -100;
+}
+
+/* don't actually rotate(180deg) or it'll break the z-indexes */
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Stacking_context */
+.row:nth-child(even) .ring-container .ring-partial.ring-partial_top .ring {
+	z-index: -100;
+}
+
+.row:nth-child(even) .ring-container .ring-partial.ring-partial_middle .ring {
+	z-index: 0;
+}
+
+.row:nth-child(even) .ring-container .ring-partial.ring-partial_bottom .ring {
+	z-index: 100;
+}
+/* END RING STRUCTURE */
+
+.ring-container:hover {
+  border-color: lightcoral !important;
+}
+
+.ring-container:hover .ring {
+  z-index: 1000 !important;
+}
+
+/* todo: move over the inline styles */
+.color-picker_container {
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+}
