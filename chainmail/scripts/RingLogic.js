@@ -14,8 +14,9 @@ class RingLogic {
         const template = this.#getTemplate();
         const ring = this.#parser.parseFromString(template, 'text/html').body.children[0];
         
-        ring.onclick = RingLogic.#onClick;
+        ring.onmousedown = RingLogic.#onClick;
         ring.oncontextmenu = RingLogic.#onContextMenu;
+        ring.onmouseover = RingLogic.#onMouseOver;
         
         return ring;
     }
@@ -29,6 +30,19 @@ class RingLogic {
         event.preventDefault();
         var ringContainer = event.target.closest('.ring-container');
         ringContainer.style['border-color'] = '';
+    }
+    
+    static #onMouseOver(event) {
+        event.preventDefault();
+        var ringContainer = event.target.closest('.ring-container');
+
+        if(event.buttons === 1) {            
+            ringContainer.style['border-color'] = RingLogic.#selectorLogic.GetColorPickerPreviewElement().value;
+        }
+        
+        if(event.buttons === 2) {
+            ringContainer.style['border-color'] = '';
+        }
     }
     
     #getTemplate() {
