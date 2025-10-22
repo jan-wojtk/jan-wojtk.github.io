@@ -1,14 +1,16 @@
 <!DOCTYPE html5>
 <html>
     <head>
-        <link href="./layout.css" rel="stylesheet" />
-        <link href="./chainmail.css" rel="stylesheet" />
-        <link href="./ring.css" rel="stylesheet" />
-        <link href="./form.css" rel="stylesheet" />
-        <script src="./RingLogic.js"></script>
-        <script src="./ChainmailLogic.js"></script>
-        <script src="./FormLogic.js"></script>
-        <script src="./boilerplate.js"></script>
+        <link rel="icon" href="./favicon.ico" type="image/x-icon">
+        <link href="./styles/layout.css" rel="stylesheet" />
+        <link href="./styles/chainmail.css" rel="stylesheet" />
+        <link href="./styles/ring.css" rel="stylesheet" />
+        <link href="./styles/form.css" rel="stylesheet" />
+        <script src="./scripts/SelectorLogic.js"></script>
+        <script src="./scripts/RingLogic.js"></script>
+        <script src="./scripts/ChainmailLogic.js"></script>
+        <script src="./scripts/FormLogic.js"></script>
+        <script src="./scripts/boilerplate.js"></script>
     </head>
     <body>
         <div id="content">
@@ -49,21 +51,31 @@
                     </div>
                 </div>
                 
+                <br/>
+                
+                <button id="reset-all-metals" title="Changes ring metals to default Copper">Reset Ring Metals</button>
+                
+                <br/><br/>
+                <hr />
                 <br/><br/>
                 
                 <button id="add-column" title="Connects to the right-most column">Add Column</button>
                 <button id="add-row" title="Connects to the bottom-most row">Add Row</button>
                 
                 <br /><br />
-                <button id="clear" title="Removes all rings">Clear</button>
+                
+                <button id="remove-column" title="Removes the right-most column">Remove Column</button>
+                <button id="remove-row" title="Removes the bottom-most row">Remove Row</button>
                 
                 <br /><br />
                 
+                <button id="clear" title="Removes all rings">Clear All</button>
+                
+                <br /><br />                
                 <hr />
+                <br/><br/>
                 
                 <button id="explode-outline-offset">Explode Outlines (for fun)</button>
-                <!--button id="remove-column" title="Removes the right-most column">Remove Column</button-->
-                <!--button id="remove-row" title="Removes the bottom-most row">Remove Row</button-->
             </section>
         </div>
     </body>

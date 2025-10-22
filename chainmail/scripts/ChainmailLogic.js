@@ -1,4 +1,5 @@
 class ChainmailLogic {
+    #selectorLogic = new SelectorLogic();
     #ringLogic = new RingLogic();
     #parser = new DOMParser();
     
@@ -10,12 +11,25 @@ class ChainmailLogic {
         this.#addColumn();
     }
     
+    RemoveRow() {
+        this.#removeRow();
+    }
+    
+    RemoveColumn() {
+        this.#removeColumn();
+    }
+    
+    ResetAllRingMetals() {
+        var rings = this.#selectorLogic.GetRingContainerElements();
+        rings.forEach(ring => this.#ringLogic.ResetRingMetal(ring));
+    }
+    
     Clear() {
         this.#clear();
     }
     
     #addColumn() {
-        var rows = this.#getChainmailRowElements();
+        var rows = this.#selectorLogic.GetChainmailRowElements();
         var rowCount = rows.length;
         
         if(rowCount === 0 || rowCount === 1) {
@@ -43,7 +57,7 @@ class ChainmailLogic {
     }
 
     #addRow() {
-        var rows = this.#getChainmailRowElements();
+        var rows = this.#selectorLogic.GetChainmailRowElements();
         var rowCount = rows.length;
         
         if(rowCount === 0) {
@@ -68,6 +82,40 @@ class ChainmailLogic {
         }
     }
     
+    #removeRow() {
+        var rows = this.#selectorLogic.GetChainmailRowElements();
+        
+        // only do this if there are 3 or more rows - to avoid a weird state
+        if(rows.length >= 3) {
+            var lastRow = [...rows].at(-1);
+            lastRow.remove();
+        }
+    }
+    
+    #removeColumn() {
+        var rows = this.#selectorLogic.GetChainmailRowElements();
+        
+        // only do this if there are 3 or more columns - to avoid a weird state
+        const maxColumnCount = rows.length >= 2 ? Math.max(rows[0].children.length, rows[1].children.length) : 0;
+        if(maxColumnCount >= 2) {        
+            var isRowRingCountEqual = rows[0].children.length === rows[1].children.length;
+            var targetRows = [];
+            
+            // if odd and even rows have the same ring count, it's even's turn
+            // todo: make a #get* convenience method out of this (even / odd)
+            if(isRowRingCountEqual) {
+                targetRows = [...rows].filter((row, index) => !!(index % 2));
+            }
+            
+            if(!isRowRingCountEqual) {
+                targetRows = [...rows].filter((row, index) => !(index % 2));
+            }
+            
+            // todo: when a row is empty, remove the row
+            targetRows.forEach((row) => [...row.children].at(-1).remove());
+        }
+    }
+    
     #appendRowToChainmail(ringCount = 1) {
         const row = this.#getRow();
         
@@ -75,7 +123,7 @@ class ChainmailLogic {
             row.appendChild(this.#ringLogic.GetRing());
         }
         
-        this.#getChainmailContainerElement().appendChild(row);
+        this.#selectorLogic.GetChainmailContainerElement().appendChild(row);
     }
     
     #getRow() {
@@ -91,24 +139,11 @@ class ChainmailLogic {
     }
     
     #clear() {
-        const container = this.#getChainmailContainerElement();
+        const container = this.#selectorLogic.GetChainmailContainerElement();
         
         // google told me this makes sense and i believe it
         while (container.lastChild) {
           container.removeChild(container.lastChild);
         }
-    }
-    
-    // todo: make constants out of selector strings
-    #getRingContainerElements() {
-        return document.querySelectorAll('.ring-container');
-    }
-
-    #getChainmailRowElements() {
-        return document.querySelectorAll('.row');
-    }
-
-    #getChainmailContainerElement() {
-        return document.getElementById('chainmail-container');
     }
 }

@@ -1,8 +1,13 @@
 class RingLogic {
+    static #selectorLogic = new SelectorLogic();
     #parser = new DOMParser();
     
     GetRing() {
         return this.#getRing();
+    }
+    
+    ResetRingMetal(ring) {
+        ring.style['border-color'] = '';
     }
     
     #getRing() {
@@ -17,7 +22,7 @@ class RingLogic {
     
     static #onClick(event) {
         var ringContainer = event.target.closest('.ring-container');
-        ringContainer.style['border-color'] = RingLogic.#getColorPickerPreviewElement().value;
+        ringContainer.style['border-color'] = RingLogic.#selectorLogic.GetColorPickerPreviewElement().value;
     }
     
     static #onContextMenu(event) {
@@ -35,11 +40,5 @@ class RingLogic {
                 <div class="ring-partial ring-partial_bottom"><div class="ring"></div></div>
             </div>    
         `;
-    }
-    
-    // avoid ciclical depedencies by directly accessing this form element here
-    // todo: figure out how to avoid this
-    static #getColorPickerPreviewElement() {
-        return document.getElementById('color-picker_preview');
     }
 }
