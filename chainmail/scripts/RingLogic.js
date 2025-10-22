@@ -22,6 +22,7 @@ class RingLogic {
     }
     
     static #onClick(event) {
+        event.preventDefault();
         var ringContainer = event.target.closest('.ring-container');
         ringContainer.style['border-color'] = RingLogic.#selectorLogic.GetColorPickerPreviewElement().value;
     }
