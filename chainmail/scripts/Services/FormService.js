@@ -59,4 +59,10 @@ class FormLogic {
     - zoom out
     - history
     - full spectrum color picker, with "recent colors" list
+    - mm css units
+    - font size mm at root? rem/em?
+    - select wire gauge
+    - select inner diameter
+    - save progress
+    - row & column count pickers
 */

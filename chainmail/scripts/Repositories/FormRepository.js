@@ -1,4 +1,4 @@
-class SelectorLogic {
+class FormSelectors {
     // FORM SELECTORS
     GetColorPickerSelectElement() {
         return document.getElementById('color-picker_select');
@@ -34,18 +34,5 @@ class SelectorLogic {
     
     GetExplodeOutlineOffsetElement() {
         return document.getElementById('explode-outline-offset');
-    }
-    
-    // CHAINMAIL SELECTORS
-    GetChainmailContainerElement() {
-        return document.getElementById('chainmail-container');
-    }
-
-    GetChainmailRowElements() {
-        return document.querySelectorAll('.row');
-    }
-    
-    GetRingContainerElements() {
-        return document.querySelectorAll('.ring-container');
     }
 }

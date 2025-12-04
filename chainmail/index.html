@@ -6,11 +6,19 @@
         <link href="./styles/chainmail.css" rel="stylesheet" />
         <link href="./styles/ring.css" rel="stylesheet" />
         <link href="./styles/form.css" rel="stylesheet" />
-        <script src="./scripts/SelectorLogic.js"></script>
-        <script src="./scripts/RingLogic.js"></script>
-        <script src="./scripts/ChainmailLogic.js"></script>
-        <script src="./scripts/FormLogic.js"></script>
-        <script src="./scripts/boilerplate.js"></script>
+        
+        <!-- Include first (imagine as a Repository layer) -->
+        <script src="./scripts/Rings/RingSelectors.js"></script>
+        <script src="./scripts/Chainmail/ChainmailSelectors.js"></script>
+        <script src="./scripts/Form/FormSelectors.js"></script>
+        
+        <!-- Include second (imagine as service layer)-->
+        <script src="./scripts/Rings/RingLogic.js"></script>
+        <script src="./scripts/Chainmail/ChainmailLogic.js"></script>
+        <script src="./scripts/Form/FormLogic.js"></script>
+        
+        <!-- Include last (imagine as a .exe) -->
+        <script src="./scripts/index.js"></script>
     </head>
     <body>
         <div id="content">
@@ -18,64 +26,55 @@
                 <div id="chainmail-container"></div>
             </section>
             <section id="form">
-                <div id="color-picker" class="color-picker">
-                    <label for="color-picker_select">Apply Metal on Click<label>
-                    <div class="color-picker_container">
-                        <input
-                            id="color-picker_preview"
-                            class="color-picker_preview"
-                            disabled
-                            type="color"
-                            value="#ffff19"
-                        />
-                        <select id="color-picker_select" class="color-picker_select">
-                            <!-- {Label:MetalType} => {reference:NamedColor} => {Value:NamedColorHex} -->
-                            <!-- Brass => madeitup => #ffff19 -->
-                            <!-- Bronze => goldenrod => #daa520 -->
-                            <!-- Copper => sandybrown => #f4a460 -->
-                            <!-- Gold => gold => #ffd700 -->
-                            <!-- Nickel => whitesmoke => #f5f5f5 -->
-                            <!-- Rose Gold => googledit => #f1a886 -->
-                            <option label="Brass" value="#ffff19"></option>
-                            <option label="Bronze" value="#daa520"></option>
-                            <option label="Copper" value="#f4a460"></option>
-                            <option label="Gold" value="#ffd700"></option>
-                            <option label="Nickel" value="#f5f5f5"></option>
-                            <option label="Rose Gold" value="#f1a886"></option>
-                            <hr />
-                            <option label="Black" value="#000000"></option>
-                            <option label="Red" value="#ff0000"></option>
-                            <option label="Green" value="#00ff00"></option>
-                            <option label="Blue" value="#0000ff"></option>
-                        </select>
-                    </div>
-                </div>
+                <!-- Spitballing -->
                 
-                <br/>
+                <!-- v1.0 -->
+                <fieldset>
+                    <legend>Select (expand, collapse)</legend>
+                </fieldset>
                 
-                <button id="reset-all-metals" title="Changes ring metals to default Copper">Reset Ring Metals</button>
+                <fieldset>
+                    <legend>Configure (expand, collapse)</legend>
+                </fieldset>
                 
-                <br/><br/>
-                <hr />
-                <br/><br/>
+                <!-- v1.1 -->
+                <contextmenu>
+                    <!-- event.preventdefault() -->
+                    <item>Delete Selected</item>
+                </contextmenu>
                 
-                <button id="add-column" title="Connects to the right-most column">Add Column</button>
-                <button id="add-row" title="Connects to the bottom-most row">Add Row</button>
+                <!-- v2.0 --> 
+                <AddGhostRing>
+                <RemoveGhostRing>
+                <TransformSheetGhostRing>
                 
-                <br /><br />
+                <contextmenu>
+                    <li>Start New Sheet (maybe just open a new tab)</li>
+                    <li>Save Sheet to Local Storage</li>
+                </contextmenu>
                 
-                <button id="remove-column" title="Removes the right-most column">Remove Column</button>
-                <button id="remove-row" title="Removes the bottom-most row">Remove Row</button>
+                <!-- v3.0 -->
+                <sidebar>
+                    <tab><icon></icon>Select</tab>
+                    <tab><icon></icon>Color
+                        <section>
+                            <colorpickerarea />
+                            <colorpickerhistory />
+                        </section>
+                    </tab>
+                    <tab><icon></icon>Add and Remove</tab>
+                    
+                    <!--v4.0 fieldset><legend>Layers</legend></fieldset>
+                    <hr /-->
+                    
+                    <floatbottomsection>
+                        <button>Explode outlines (for funsies)</button>
+                    </floatbottomsection>
+                </sidebar>
                 
-                <br /><br />
-                
-                <button id="clear" title="Removes all rings">Clear All</button>
-                
-                <br /><br />                
-                <hr />
-                <br/><br/>
-                
-                <button id="explode-outline-offset">Explode Outlines (for fun)</button>
+                <rightclick>
+                  Remove (on mouseup)
+                </rightclick>
             </section>
         </div>
     </body>
