@@ -65,4 +65,5 @@ class FormLogic {
     - select inner diameter
     - save progress
     - row & column count pickers
+    - layers
 */

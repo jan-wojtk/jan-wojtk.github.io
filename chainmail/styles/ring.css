@@ -15,10 +15,6 @@
     width: 50px;
 }
 
-#chainmail-container.explode-outline-offset .ring-container {
-    transition: outline-offset 5s ease-in-out;
-    outline-offset: 1000px;
-}
 
 .ring-partial {
     border-color: inherit;
@@ -36,11 +32,6 @@
     outline: 1px solid #888888;
     outline-offset: -9px;
     width: 32px;
-}
-
-#chainmail-container.explode-outline-offset .ring {
-    transition: outline-offset 5s ease-in-out;
-    outline-offset: 1000px;
 }
 
 .ring-partial .ring {
@@ -61,11 +52,3 @@
     z-index: -100;
 }
 
-/* reverse the z-index rules above */
-.row:nth-child(even) .ring-container .ring-partial.ring-partial_top .ring {
-    z-index: -100;
-}
-
-.row:nth-child(even) .ring-container .ring-partial.ring-partial_bottom .ring {
-    z-index: 100;
-}
