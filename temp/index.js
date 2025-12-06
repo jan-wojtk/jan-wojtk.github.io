@@ -25,7 +25,7 @@ class RingComponent extends HTMLElement {
     
     this.#color = 'sandybrown';
     this.#gaugeMm = 1.6; // 14g
-    this.#innerDiameterMm = 4;
+    this.#innerDiameterMm = 6;
     this.#outlineColor = '#888888';
     this.#rotate180 = false;
   }
@@ -242,11 +242,11 @@ class SheetComponent extends HTMLElement {
 
             chainmail-sheet > .row ~ .row {
                 /* -1/2 of ring width - outlineWidth * 2 */
-                margin-top: calc(-4mm - 3.5px);
+                margin-top: calc(-4mm - 5px);
             }
 
             chainmail-sheet > .row:nth-child(even) {
-                margin-left: calc(3.25mm + 1px); /* (about) diameter / 2  -  outer outline width */
+                margin-left: calc(4.25mm + 1px); /* (about) diameter / 2  -  outer outline width */
             }
             
             /* todo: morphing overflow and border-radius is also fun
