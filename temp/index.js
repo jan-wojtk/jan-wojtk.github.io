@@ -24,7 +24,7 @@ class RingComponent extends HTMLElement {
     super();
     
     this.#color = 'sandybrown';
-    this.#gaugeMm = 1.25;
+    this.#gaugeMm = 1.6; // 14g
     this.#innerDiameterMm = 4;
     this.#outlineColor = '#888888';
     this.#rotate180 = false;
@@ -216,6 +216,18 @@ class SheetComponent extends HTMLElement {
           <chainmail-ring rotate-180="true"></chainmail-ring>
           <chainmail-ring rotate-180="true"></chainmail-ring>
         </div>
+         <div class="row">
+          <chainmail-ring></chainmail-ring>
+          <chainmail-ring></chainmail-ring>
+          <chainmail-ring></chainmail-ring>
+          <chainmail-ring></chainmail-ring>
+        </div>
+        <div class="row">
+          <chainmail-ring rotate-180="true"></chainmail-ring>
+          <chainmail-ring rotate-180="true"></chainmail-ring>
+          <chainmail-ring rotate-180="true"></chainmail-ring>
+          <chainmail-ring rotate-180="true"></chainmail-ring>
+        </div>
     `, 'text/html').body.children;
     while(rows.length > 0) this.appendChild(rows[0]);
     
@@ -230,11 +242,11 @@ class SheetComponent extends HTMLElement {
 
             chainmail-sheet > .row ~ .row {
                 /* -1/2 of ring width - outlineWidth * 2 */
-                margin-top: calc(-4mm - 0px);
+                margin-top: calc(-4mm - 3.5px);
             }
 
             chainmail-sheet > .row:nth-child(even) {
-                margin-left: calc(3.25mm - .25px); /* (about) diameter / 2  -  outer outline width */
+                margin-left: calc(3.25mm + 1px); /* (about) diameter / 2  -  outer outline width */
             }
             
             /* todo: morphing overflow and border-radius is also fun
