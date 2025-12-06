@@ -29,13 +29,13 @@ class SheetComponent extends HTMLElement {
     const gauge = 1.6;
     const innerDiameter = 6;
     const rowList = parser.parseFromString(
-      Array(this.#rows).fill(null).map((value, index) => `
+      Array(this.#rows).fill(null).map((value, rowIndex) => `
         <div class="row">
           ${Array(this.#columns).fill(null).map((value, index) => `
             <chainmail-ring
               gauge-mm="${gauge}"
               inner-diameter-mm="${innerDiameter}"
-              rotate-180="${(index%2)}"
+              rotate-180="${rowIndex%2==1}"
             ></chainmail-ring>
           `).join('')}
         </div>

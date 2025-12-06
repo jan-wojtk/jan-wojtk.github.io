@@ -26,10 +26,7 @@ class RingComponent extends HTMLElement {
   
   // Attribute Setters
   #setRotate180(newValue) {
-    this.#rotate180 = newValue;
-      
-    if(this.#rotate180) this.classList.add('rotate-180');
-    if(!this.#rotate180) this.classList.remove('rotate-180');
+    this.#rotate180 = newValue === "true"; // todo, clarify casting
   }
   
   // Members
@@ -45,15 +42,22 @@ class RingComponent extends HTMLElement {
     const parser = new DOMParser();
     
     // Render template
-    const partialCount = 10;
-    const zIndexes = { 0: -100, 1: -80, 2: -60, 3: -40, 4: -20, 5: 0, 6: 20, 7: 40, 8: 60, 9: 80, 10: 100 };
+    const partialCount = 3;
+    const zIndexes3 = { 0: -100, 1: 0, 2: 100 };
+    //const zIndexes5 = { 0: -100, 1: -50, 2: 0, 3: 50, 4: 100 };
+    //const zIndexes10 = { 0: -100, 1: -80, 2: -60, 3: -40, 4: -20, 5: 0, 6: 20, 7: 40, 8: 60, 9: 80, 10: 100 };
     const partialsV2 = parser.parseFromString(
       Array(partialCount).fill(null).map((value, index) => {
-        const zIndex = this.#rotate180 ? zIndexes[index] * -1 : zIndexes[index];
+        const zIndex = this.#rotate180 ? zIndexes3[index] * -1 : zIndexes3[index];
+        
         return `
           <div class="ring-partial">
-            <div class="ring" style="z-index: ${zIndex}; margin-top: -${(this.#innerDiameterMm + (this.#gaugeMm * 2))*(index)/partialCount}mm;">
-            </div>
+            <div class="ring"
+              style="
+                z-index: ${zIndex};
+                margin-top: -${(this.#innerDiameterMm + (this.#gaugeMm * 2))*(index)/partialCount}mm;
+              "
+            ></div>
           </div>
         `;
       }).join(''), 'text/html'
@@ -67,9 +71,10 @@ class RingComponent extends HTMLElement {
         <style id="chainmail-ring-styles">          
           chainmail-ring {
             border-color: ${this.#color};
-            outline: .75px solid ${this.#outlineColor}; /* todo: reflect change from .5px to .75px in calculated css rules */
             border-radius: 50%;
             height: calc(${(this.#innerDiameterMm + (this.#gaugeMm * 2))}mm - ${outlineWidth});
+            outline: .75px solid ${this.#outlineColor}; /* todo: reflect change from .5px to .75px in calculated css rules */
+            overflow: hidden;
             width: calc(${(this.#innerDiameterMm + (this.#gaugeMm * 2))}mm - ${outlineWidth});
           }
 
