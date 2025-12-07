@@ -68,10 +68,11 @@ class RingComponent extends HTMLElement {
     const outlineWidth = '.5px';
     if(!this.#styles)
       document.head.appendChild(parser.parseFromString(`
-        <style id="chainmail-ring-styles">          
+        <style id="chainmail-ring-styles" data-inner-diameter="${this.#innerDiameterMm}" data-gauge-mm="${this.#gaugeMm}">          
           chainmail-ring {
             border-color: ${this.#color};
             border-radius: 50%;
+            cursor: pointer;
             height: calc(${(this.#innerDiameterMm + (this.#gaugeMm * 2))}mm - ${outlineWidth});
             outline: .75px solid ${this.#outlineColor}; /* todo: reflect change from .5px to .75px in calculated css rules */
             overflow: hidden;
@@ -98,6 +99,10 @@ class RingComponent extends HTMLElement {
 
           chainmail-ring > .ring-partial > .ring {
             position: relative;
+          }
+          
+          chainmail-ring:hover {
+            border-color: lightcoral !important;
           }
         </style>
       `, 'text/html').head.children[0]);

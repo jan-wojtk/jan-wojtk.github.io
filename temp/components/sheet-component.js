@@ -1,14 +1,18 @@
 class SheetComponent extends HTMLElement {
-  static attributeNames = { rows: 'rows', columns: 'columns' };
+  static attributeNames = { rows: 'rows', columns: 'columns', innerDiameterMm: "inner-diameter-mm", gaugeMm: 'gauge-mm' };
   static observedAttributes = Object.values(this.attributeNames);
   
   // Attributes
   #rows = 10;
   #columns = 10;
+  #gaugeMm = 1.02;
+  #innerDiameterMm = 1.02;
   
   attributeChangedCallback(name, oldValue, newValue) {
     if(SheetComponent.attributeNames.rows === name) this.#rows = parseInt(newValue);
     if(SheetComponent.attributeNames.columns === name) this.#columns = parseInt(newValue);
+    if(SheetComponent.attributeNames.gaugeMm === name) this.#gaugeMm = parseFloat(newValue);
+    if(SheetComponent.attributeNames.innerDiameterMm === name) this.#innerDiameterMm = parseFloat(newValue);
   }
   
   // Members
