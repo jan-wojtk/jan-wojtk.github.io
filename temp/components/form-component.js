@@ -123,7 +123,7 @@ class FormComponent extends HTMLElement {
       <fieldset>
         <legend>View</legend>
         <label for="chainmail-form__zoom">Zoom</label>
-        <input id="chainmail-form__zoom" type="number" min="50" max="300" step="10" value="100" />
+        <input id="chainmail-form__zoom" type="number" min="50" max="300" step="10" value="200" />
         
         <label><input id="chainmail-form__dark-mode" type="checkbox" checked/>Dark Mode</label>
       </fieldset>

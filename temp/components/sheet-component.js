@@ -43,11 +43,11 @@ class SheetComponent extends HTMLElement {
           }
           
           chainmail-sheet > .row ~ .row {
-            margin-top: -14.33386; /*calc(-4mm - 5px);*/
+            margin-top: -12.83386; /*calc(-4mm - 5px);*/
           }
           
           chainmail-sheet > .row:nth-child(even) {
-            margin-left: 10.8386;/*calc(4.25mm + 1px);*/ /* (about) diameter / 2  -  outer outline width */
+            margin-left: 11.8386;/*calc(4.25mm + 1px);*/ /* (about) diameter / 2  -  outer outline width */
           }
         </style>
       `, 'text/html').head.children[0];
