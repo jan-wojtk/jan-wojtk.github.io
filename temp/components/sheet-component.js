@@ -1,21 +1,24 @@
 class SheetComponent extends HTMLElement {
+  constructor() {
+    super();
+  }
+  
+  // Attributes
   static attributeNames = { rows: 'rows', columns: 'columns', innerDiameterMm: "inner-diameter-mm", gaugeMm: 'gauge-mm' };
   static observedAttributes = Object.values(this.attributeNames);
   
-  // Attributes
   #rows = 10;
   #columns = 10;
   #gaugeMm = 1.02;
-  #innerDiameterMm = 1.02;
+  #innerDiameterMm = 4;
   
   attributeChangedCallback(name, oldValue, newValue) {
     if(SheetComponent.attributeNames.rows === name) this.#rows = parseInt(newValue);
     if(SheetComponent.attributeNames.columns === name) this.#columns = parseInt(newValue);
-    if(SheetComponent.attributeNames.gaugeMm === name) this.#gaugeMm = parseFloat(newValue);
-    if(SheetComponent.attributeNames.innerDiameterMm === name) this.#innerDiameterMm = parseFloat(newValue);
+    if(SheetComponent.attributeNames.gaugeMm === name) this.#onChangeGauge(newValue);
+    if(SheetComponent.attributeNames.innerDiameterMm === name) this.#onChangeInnerDiameter(newValue);
   }
   
-  // Members
   get #rowList() {
     return this.querySelectorAll('.row');
   }
@@ -24,21 +27,66 @@ class SheetComponent extends HTMLElement {
     return document.getElementById('chainmail-sheet-styles');
   }
   
-  constructor() {
-    super();
+  #renderStyles() {
+    const hasExistingStyles = !!this.#styles;
+    const hasNewGauge = !hasExistingStyles || this.#styles.getAttribute('data-gauge-mm') !== `${this.#gaugeMm}`;
+    const hasNewInnerDiameter = !hasExistingStyles || this.#styles?.getAttribute('data-inner-diameter-mm') !== `${this.#innerDiameterMm}`;
+    const hasNewParameter = hasNewGauge || hasNewInnerDiameter;
+    
+    if(hasNewParameter) {
+      const parser = new DOMParser();
+      const newStyles = parser.parseFromString(`
+        <style id="chainmail-sheet-styles" data-gauge-mm="${this.#gaugeMm}" data-inner-diameter-mm="${this.#innerDiameterMm}">
+          chainmail-sheet > .row {
+            display: flex;
+            flex-direction:row;
+          }
+          
+          chainmail-sheet > .row ~ .row {
+            margin-top: -14.33386; /*calc(-4mm - 5px);*/
+          }
+          
+          chainmail-sheet > .row:nth-child(even) {
+            margin-left: 10.8386;/*calc(4.25mm + 1px);*/ /* (about) diameter / 2  -  outer outline width */
+          }
+        </style>
+      `, 'text/html').head.children[0];
+      
+      if(!hasExistingStyles) document.head.appendChild(newStyles);
+      else this.#styles.replaceWith(newStyles);
+    }
+  }
+  
+  #setAllRingAttributes(attributeName, newValue) {
+    this.#rowList.forEach(row => {
+      row.querySelectorAll('chainmail-ring').forEach(ring => {
+        ring.setAttribute(attributeName, newValue)
+      });
+    });
+  }
+  
+  #onChangeGauge(newValue) {
+    this.#gaugeMm = parseFloat(newValue);
+    this.#renderStyles();
+    this.#setAllRingAttributes(RingComponent.attributeNames.gaugeMm, this.#gaugeMm);
+  }
+  
+  #onChangeInnerDiameter(newValue) {
+    this.#innerDiameterMm = parseFloat(newValue);
+    this.#renderStyles();
+    this.#setAllRingAttributes(RingComponent.attributeNames.innerDiameterMm, this.#innerDiameterMm);
   }
   
   connectedCallback() {
     const parser = new DOMParser();
-    const gauge = 1.6;
-    const innerDiameter = 6;
+    
     const rowList = parser.parseFromString(
       Array(this.#rows).fill(null).map((value, rowIndex) => `
         <div class="row">
           ${Array(this.#columns).fill(null).map((value, index) => `
             <chainmail-ring
-              gauge-mm="${gauge}"
-              inner-diameter-mm="${innerDiameter}"
+              gauge-mm="${this.#gaugeMm}"
+              inner-diameter-mm="${this.#innerDiameterMm}"
               rotate-180="${rowIndex%2==1}"
             ></chainmail-ring>
           `).join('')}
@@ -48,36 +96,7 @@ class SheetComponent extends HTMLElement {
     while(rowList.length > 0) this.appendChild(rowList[0]);
     
     // Render styles
-    if(!this.#styles)
-      document.head.appendChild(parser.parseFromString(`
-        <style id="chainmail-sheet-styles">
-          chainmail-sheet > .row {
-            display: flex;
-            flex-direction:row;
-          }
-
-          chainmail-sheet > .row ~ .row {
-            /* -1/2 of ring width - outlineWidth * 2 */
-            margin-top: calc(-4mm - 5px);
-          }
-
-          chainmail-sheet > .row:nth-child(even) {
-            margin-left: calc(4.25mm + 1px); /* (about) diameter / 2  -  outer outline width */
-          }
-          
-          /* todo: morphing overflow and border-radius is also fun
-          chainmail-sheet.explode-outline-offset chainmail-ring {
-            transition: outline-offset 5s ease-in-out;
-            outline-offset: 1000px;
-          }
-          chainmail-sheet.explode-outline-offset chainmail-ring {
-            transition: outline-offset 5s ease-in-out;
-            outline-offset: 1000px;
-          }
-        </style>
-      `, 'text/html').head.children[0]);
-    
-    //this.#appendRowToChainmail(10);
+    this.#renderStyles();
     
     // Register event listeners
     this.addEventListener('click', this.handleClick);

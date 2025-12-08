@@ -5,6 +5,58 @@ class FormComponent extends HTMLElement {
     return document.getElementById('chainmail-form-styles');
   }
   
+  #renderStyles() {
+    const hasExistingStyles = !!this.#styles;
+    const hasNewParameter = !hasExistingStyles;
+    
+    if(hasNewParameter) {
+      const parser = new DOMParser();
+      const newStyles = parser.parseFromString(`
+          <style id="chainmail-form-styles">
+            chainmail-form > fieldset {
+              border: 0;
+              border-top: 1px dashed #cccccc;
+              display:block;
+              padding: 0;
+            }
+            
+            chainmail-form > fieldset ~ fieldset {
+              margin-top: 2em;
+            }
+            
+            chainmail-form > fieldset > legend {
+              font-size: 18px;
+              font-weight: bold;
+              margin-bottom: .5em;
+            }
+            
+            chainmail-form > fieldset > label {
+              display:block;
+              font-size: 14px;
+              font-weight: bold;
+              margin-top: .5em;
+            }
+            
+            chainmail-form > fieldset > label::after {
+              content: "\\A";
+              display: block;
+              font-size: 0;
+              white-space: pre-wrap;
+            }
+            
+            chainmail-form > fieldset > label ~ input,
+            chainmail-form > fieldset > label ~ select {
+              height: 2em;
+              width: 100%;
+            }
+          </style>
+        `, 'text/html').head.children[0];
+      
+      if(!hasExistingStyles) document.head.appendChild(newStyles);
+      else this.#styles.replaceWith(newStyles);
+    }
+  }
+  
   get #rowsInput() {
     return document.getElementById('chainmail-form__rows');
   }
@@ -47,7 +99,7 @@ class FormComponent extends HTMLElement {
         <select id="chainmail-form__gauge">
           <option value=".812">20g (.812mm)</option>
           <option value=".912">19g (.912mm)</option>
-          <option value="1.02">18g (1.02mm)</option>
+          <option value="1.02" selected>18g (1.02mm)</option>
           <option value="1.15">17g (1.15mm)</option>
           <option value="1.29">16g (1.29mm)</option>
           <option value="1.45">15g (1.45mm)</option>
@@ -56,11 +108,12 @@ class FormComponent extends HTMLElement {
           <option value="2.05">12g (2.05mm)</option>
           <option value="2.31">11g (2.31mm)</option>
           <option value="2.59">10g (2.59mm)</option>
+          <option value="2.91">9g (2.91mm)</option>
         </select>
         
         <label for="chainmail-form__inner-diameter">Inner Diameter</label>
         <select id="chainmail-form__inner-diameter">
-          <option value="4">4mm</option>
+          <option value="4" selected>4mm</option>
           <option value="6">6mm</option>
           <option value="7">7mm</option>
           <option value="8">8mm</option>
@@ -70,64 +123,25 @@ class FormComponent extends HTMLElement {
       <fieldset>
         <legend>View</legend>
         <label for="chainmail-form__zoom">Zoom</label>
-        <input id="chainmail-form__zoom" type="number" min=".5" max="3" step=".01" value="1" />
+        <input id="chainmail-form__zoom" type="number" min="50" max="300" step="10" value="100" />
         
-        <label><input id="chainmail-form__dark-mode" type="checkbox"/>Dark Mode</label>
+        <label><input id="chainmail-form__dark-mode" type="checkbox" checked/>Dark Mode</label>
       </fieldset>
     `;
     const fieldsets = parser.parseFromString(template, 'text/html').body.children;
     while(fieldsets.length > 0) this.appendChild(fieldsets[0]);
     
     // Render styles
-    if(!this.#styles)
-      document.head.appendChild(parser.parseFromString(`
-        <style id="chainmail-form-styles">
-          chainmail-form > fieldset {
-            border: 0;
-            border-top: 1px dashed #cccccc;
-            display:block;
-            padding: 0;
-          }
-          
-          chainmail-form > fieldset ~ fieldset {
-            margin-top: 2em;
-          }
-          
-          chainmail-form > fieldset > legend {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: .5em;
-          }
-          
-          chainmail-form > fieldset > label {
-            display:block;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: .5em;
-          }
-          
-          chainmail-form > fieldset > label::after {
-            content: "\\A";
-            display: block;
-            font-size: 0;
-            white-space: pre-wrap;
-          }
-          
-          chainmail-form > fieldset > label ~ input,
-          chainmail-form > fieldset > label ~ select {
-            height: 2em;
-            width: 100%;
-          }
-        </style>
-      `, 'text/html').head.children[0]);
+    this.#renderStyles();
       
-      // Register Event Listeners
-      this.#gaugeSelect.addEventListener('change', this.#setGauge);
-      this.#innerDiameterSelect.addEventListener('change', this.#setInnerDiameter);
-      this.#rowsInput.addEventListener('change', this.#setRows);
-      this.#columnsInput.addEventListener('change', this.#setColumns);
-      this.#zoomInput.addEventListener('change', this.#setZoom);
-      this.#darkModeCheckbox.addEventListener('change', this.#setDarkMode);
+      
+    // Register Event Listeners
+    this.#gaugeSelect.addEventListener('change', this.#setGauge);
+    this.#innerDiameterSelect.addEventListener('change', this.#setInnerDiameter);
+    this.#rowsInput.addEventListener('change', this.#setRows);
+    this.#columnsInput.addEventListener('change', this.#setColumns);
+    this.#zoomInput.addEventListener('change', this.#setZoom);
+    this.#darkModeCheckbox.addEventListener('change', this.#setDarkMode);
   }
   
   #setGauge(event) {
@@ -152,11 +166,12 @@ class FormComponent extends HTMLElement {
   
   #setZoom(event) {
     const newValue = event.target.value;
-    document.querySelector('body > main').style.zoom = newValue;
+    document.querySelector('body > main').style.zoom = parseInt(newValue)/100;
   }
   
-  #setDarkMode() {
-    
+  #setDarkMode(event) {
+    if(event.target.checked) document.body.classList.add('dark-mode');
+    if(!event.target.checked) document.body.classList.remove('dark-mode');
   }
 }
 customElements.define("chainmail-form", FormComponent);

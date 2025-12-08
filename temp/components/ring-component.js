@@ -1,4 +1,9 @@
 class RingComponent extends HTMLElement {
+  constructor() {
+    super();
+  }
+  
+  // Attributes
   static attributeNames = {
     color: 'color',
     gaugeMm: 'gauge-mm',
@@ -8,25 +13,34 @@ class RingComponent extends HTMLElement {
   };
   static observedAttributes = Object.values(this.attributeNames);
   
-  // Attributes
   #color = 'sandybrown';
-  #innerDiameterMm = 6;
-  #gaugeMm = 1.6; // 14g
+  #innerDiameterMm = 4;
+  #gaugeMm = 1.02;
   #outlineColor = '#888888';
   #rotate180 = false;
   
-  // Attribute Change Callback (override)
+  // Attribute Callbacks
   attributeChangedCallback(name, oldValue, newValue) {
     if(RingComponent.attributeNames.color === name) this.#color = newValue;
-    if(RingComponent.attributeNames.gaugeMm === name) this.#gaugeMm = parseFloat(newValue);
-    if(RingComponent.attributeNames.innerDiameterMm === name) this.#innerDiameterMm = parseFloat(newValue);
+    if(RingComponent.attributeNames.gaugeMm === name) this.#onChangeGauge(newValue);
+    if(RingComponent.attributeNames.innerDiameterMm === name) this.#onChangeInnerDiameter(newValue);
     if(RingComponent.attributeNames.outlineColor === name) this.#outlineColor = newValue;
-    if(RingComponent.attributeNames.rotate180 === name) this.#setRotate180(newValue)
+    if(RingComponent.attributeNames.rotate180 === name) this.#onChangeRotate180(newValue)
   }
   
   // Attribute Setters
-  #setRotate180(newValue) {
-    this.#rotate180 = newValue === "true"; // todo, clarify casting
+  #onChangeRotate180(newValue) {
+    this.#rotate180 = newValue === "true"; // casting string to boolean
+  }
+  
+  #onChangeGauge(newValue) {
+    this.#gaugeMm = parseFloat(newValue);
+    this.#renderStyles();
+  }
+  
+  #onChangeInnerDiameter(newValue) {
+    this.#innerDiameterMm = parseFloat(newValue);
+    this.#renderStyles();
   }
   
   // Members
@@ -34,28 +48,85 @@ class RingComponent extends HTMLElement {
     return document.getElementById('chainmail-ring-styles');
   }
   
-  constructor() {
-    super();
+  #renderStyles() {
+    // newValue should be a Node of the tag Styles
+    const hasExistingStyles = !!this.#styles;
+    const hasNewGauge = !hasExistingStyles || this.#styles.getAttribute('data-gauge-mm') !== `${this.#gaugeMm}`;
+    const hasNewInnerDiameter = !hasExistingStyles || this.#styles.getAttribute('data-inner-diameter-mm') !== `${this.#innerDiameterMm}`;
+    const hasNewParameter = hasNewGauge || hasNewInnerDiameter;
+    
+    console.log(hasExistingStyles, hasNewGauge, hasNewInnerDiameter);
+    
+    if(hasNewParameter) {
+      const parser = new DOMParser();
+      
+      const partialCount = 10;
+      const outlineWidth = '.75';
+      const newStyles = parser.parseFromString(`
+        <style id="chainmail-ring-styles" data-inner-diameter-mm="${this.#innerDiameterMm}" data-gauge-mm="${this.#gaugeMm}">          
+          chainmail-ring {
+            border-color: ${this.#color};
+            border-radius: 50%;
+            cursor: pointer;
+            height: calc(${(this.#innerDiameterMm + (this.#gaugeMm * 2))}mm - ${outlineWidth}px);
+            margin-right: ${outlineWidth * 2}px;
+            outline: .75px solid ${this.#outlineColor}; /* todo: reflect change from .5px to .75px in calculated css rules */
+            overflow: hidden;
+            width: calc(${(this.#innerDiameterMm + (this.#gaugeMm * 2))}mm - ${outlineWidth}px);
+          }
+
+          chainmail-ring > .ring-partial {
+            border-color: inherit;
+            overflow: hidden;
+            height: ${100/partialCount}%;
+            width: 100%;
+          }
+
+          chainmail-ring > .ring-partial > .ring {
+            border: ${this.#gaugeMm}mm solid;
+            border-color: inherit;
+            border-radius: 50%;
+            height: ${this.#innerDiameterMm}mm;
+            outline: ${outlineWidth}px solid ${this.#outlineColor};
+            outline-offset: -${this.#gaugeMm}mm;
+            position: relative;
+            width: ${this.#innerDiameterMm}mm;
+          }
+          
+          chainmail-ring:hover {
+            border-color: lightcoral !important;
+          }
+        </style>
+      `, 'text/html').head.children[0];
+
+      if(!hasExistingStyles) document.head.appendChild(newStyles);
+      else this.#styles.replaceWith(newStyles);
+    }
   }
   
   connectedCallback() {
     const parser = new DOMParser();
     
-    // Render template
-    const partialCount = 3;
-    const zIndexes3 = { 0: -100, 1: 0, 2: 100 };
-    //const zIndexes5 = { 0: -100, 1: -50, 2: 0, 3: 50, 4: 100 };
-    //const zIndexes10 = { 0: -100, 1: -80, 2: -60, 3: -40, 4: -20, 5: 0, 6: 20, 7: 40, 8: 60, 9: 80, 10: 100 };
+    // Render template (todo, write logic for the z-index values)
+    // Remember to avoid zIndex conflicts by using 1 instead of 0 (such as: 0 === -0 but 1 !== -1)
+    const partialCount = 10;
+    //const zIndexes3 = { 0: -100, 1: 1, 2: 100 };
+    //const zIndexes5 = { 0: -100, 1: -50, 2: 1, 3: 50, 4: 100 };
+    const zIndexes10 = { 0: -100, 1: -80, 2: -60, 3: -40, 4: -20, 5: 1, 6: 20, 7: 40, 8: 60, 9: 80, 10: 100 };
     const partialsV2 = parser.parseFromString(
       Array(partialCount).fill(null).map((value, index) => {
-        const zIndex = this.#rotate180 ? zIndexes3[index] * -1 : zIndexes3[index];
+        let zIndex = zIndexes10[index];
+        
+        if(this.#rotate180) {
+          zIndex = zIndex * -1;
+        }
         
         return `
           <div class="ring-partial">
             <div class="ring"
               style="
+                top: -${100*index}%;
                 z-index: ${zIndex};
-                margin-top: -${(this.#innerDiameterMm + (this.#gaugeMm * 2))*(index)/partialCount}mm;
               "
             ></div>
           </div>
@@ -65,47 +136,7 @@ class RingComponent extends HTMLElement {
     while(partialsV2.length > 0) this.appendChild(partialsV2[0]);
     
     // Render styles
-    const outlineWidth = '.5px';
-    if(!this.#styles)
-      document.head.appendChild(parser.parseFromString(`
-        <style id="chainmail-ring-styles" data-inner-diameter="${this.#innerDiameterMm}" data-gauge-mm="${this.#gaugeMm}">          
-          chainmail-ring {
-            border-color: ${this.#color};
-            border-radius: 50%;
-            cursor: pointer;
-            height: calc(${(this.#innerDiameterMm + (this.#gaugeMm * 2))}mm - ${outlineWidth});
-            outline: .75px solid ${this.#outlineColor}; /* todo: reflect change from .5px to .75px in calculated css rules */
-            overflow: hidden;
-            width: calc(${(this.#innerDiameterMm + (this.#gaugeMm * 2))}mm - ${outlineWidth});
-          }
-
-          chainmail-ring > .ring-partial {
-            border-color: inherit;
-            overflow: hidden;
-            height: ${(this.#innerDiameterMm + (this.#gaugeMm * 2))/partialCount}mm;
-            width: ${(this.#innerDiameterMm + (this.#gaugeMm * 2))}mm;
-          }
-
-          chainmail-ring > .ring-partial > .ring {
-            border-color: inherit;
-            border-radius: 50%;
-            border-style: solid;
-            border-width: ${this.#gaugeMm}mm;
-            height: ${this.#innerDiameterMm}mm;
-            outline: .5px solid ${this.#outlineColor};
-            outline-offset: -${this.#gaugeMm}mm;
-            width: ${this.#innerDiameterMm}mm;
-          }
-
-          chainmail-ring > .ring-partial > .ring {
-            position: relative;
-          }
-          
-          chainmail-ring:hover {
-            border-color: lightcoral !important;
-          }
-        </style>
-      `, 'text/html').head.children[0]);
+    this.#renderStyles();
     
     // Register event listeners
     this.addEventListener('click', this.handleClick);
