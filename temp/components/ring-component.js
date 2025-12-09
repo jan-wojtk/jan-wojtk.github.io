@@ -55,8 +55,6 @@ class RingComponent extends HTMLElement {
     const hasNewInnerDiameter = !hasExistingStyles || this.#styles.getAttribute('data-inner-diameter-mm') !== `${this.#innerDiameterMm}`;
     const hasNewParameter = hasNewGauge || hasNewInnerDiameter;
     
-    console.log(hasExistingStyles, hasNewGauge, hasNewInnerDiameter);
-    
     if(hasNewParameter) {
       const parser = new DOMParser();
       

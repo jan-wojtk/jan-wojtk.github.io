@@ -43,11 +43,11 @@ class SheetComponent extends HTMLElement {
           }
           
           chainmail-sheet > .row ~ .row {
-            margin-top: -12.83386; /*calc(-4mm - 5px);*/
+            margin-top: ${this.#getRowMarginTopForAspectRatio(this.#gaugeMm, this.#innerDiameterMm)};
           }
           
           chainmail-sheet > .row:nth-child(even) {
-            margin-left: 11.8386;/*calc(4.25mm + 1px);*/ /* (about) diameter / 2  -  outer outline width */
+            margin-left: ${this.#getRowMarginLeftForAspectRatio(this.#gaugeMm, this.#innerDiameterMm)};
           }
         </style>
       `, 'text/html').head.children[0];
@@ -212,6 +212,136 @@ class SheetComponent extends HTMLElement {
     while (container.lastChild) {
       container.removeChild(container.lastChild);
     }
+  }
+  
+  #getGaugeForGaugeMm(gaugeMm) {
+    // todo: move this to a lookup class / constants file
+    return {
+      '0.812': '20g',
+      '0.912': '19g',
+      '1.02': '18g',
+      '1.15': '17g',
+      '1.29': '16g',
+      '1.45': '15g',
+      '1.63': '14g',
+      '1.83': '13g',
+      '2.05': '12g',
+      '2.31': '11g',
+      '2.59': '10g',
+      '2.91': '9g',
+    }[gaugeMm];
+  }
+  
+  #getRowMarginTopForAspectRatio(gaugeMm, innerDiameterMm) {
+    const gauge = this.#getGaugeForGaugeMm(gaugeMm);
+    
+    // todo: make real formulas for these trends
+    return {
+      innerDiameter: {
+        '4': { gauge: {
+          '20g': '-9.83386',
+          '19g': '-11.33386',
+          '18g': '-12.83386',
+          '17g': '-14.53386',
+          '16g': '-16.33386',
+          '15g': '-17.83386'
+        } },
+        '6': { gauge: {
+          '20g': '-10.83386',
+          '19g': '-12.33386',
+          '18g': '-12.83386',
+          '17g': '-14.83386',
+          '16g': '-15.83386',
+          '15g': '-18.33386',
+          '14g': '-21.33386',
+          '13g': '-23.33386',
+          '12g': '-26.13386'
+        } },
+        '7': { gauge: {
+          '20g': '-11.83386',
+          '19g': '-13.33386',
+          '18g': '-14.33386',
+          '17g': '-15.83386',
+          '16g': '-16.83386',
+          '15g': '-19.33386',
+          '14g': '-20.83386',
+          '13g': '-24.33386',
+          '12g': '-26.33386',
+          '11g': '-29.33386',
+          '10g': '-32.33386'
+        } },
+        '8': { gauge: {
+          '20g': '-11.83386',
+          '19g': '-13.83386',
+          '18g': '-15.83386',
+          '17g': '-16.33386',
+          '16g': '-17.83386',
+          '15g': '-19.33386',
+          '14g': '-20.83386',
+          '13g': '-23.83386',
+          '12g': '-27.83386',
+          '11g': '-30.33386',
+          '10g': '-32.8386',
+          '9g': '-36.83386'
+        } },
+      }
+    }.innerDiameter[innerDiameterMm].gauge[gauge];
+  }
+  
+  #getRowMarginLeftForAspectRatio(gaugeMm, innerDiameterMm) {
+    const gauge = this.#getGaugeForGaugeMm(gaugeMm);
+    
+    // todo: make real formulas for these trends
+    return ({
+      innerDiameter: {
+        '4': { gauge: {
+          '20g': '10.8386',
+          '19g': '11.3386',
+          '18g': '11.8386',
+          '17g': '12.3386',
+          '16g': '12.8386',
+          '15g': '13.3386'
+        } },
+        '6': { gauge: {
+          '20g': '14.8386',
+          '19g': '15.3386',
+          '18g': '15.5386',
+          '17g': '15.8386',
+          '16g': '16.5386',
+          '15g': '17.3386',
+          '14g': '17.8386',
+          '13g': '18.5386',
+          '12g': '19.4886'
+        } },
+        '7': { gauge: {
+          '20g': '16.5386',
+          '19g': '17.0386',
+          '18g': '17.3386',
+          '17g': '17.8386',
+          '16g': '18.3386',
+          '15g': '19.2386',
+          '14g': '19.5386',
+          '13g': '20.3386',
+          '12g': '21.3386',
+          '11g': '22.3386',
+          '10g': '23.386'
+        } },
+        '8': { gauge: {
+          '20g': '18.8386',
+          '19g': '18.8386',
+          '18g': '19.3386',
+          '17g': '19.8386',
+          '16g': '20.3386',
+          '15g': '21',
+          '14g': '21.8386',
+          '13g': '22.3386',
+          '12g': '23.3386',
+          '11g': '24.3386',
+          '10g': '25.3',
+          '9g': '26.3386'
+        } },
+      }
+    }.innerDiameter[innerDiameterMm].gauge[gauge]);
   }
 }
 customElements.define("chainmail-sheet", SheetComponent);
