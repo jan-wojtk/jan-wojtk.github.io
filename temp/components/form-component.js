@@ -126,8 +126,6 @@ class FormComponent extends HTMLElement {
     } else {
       this.replaceChildren(...fieldsets);
     }
-    this.appendChild(parser.parseFromString(this.#getInnerDiameterIcon(), 'text/html').body.children[0]);
-    this.appendChild(parser.parseFromString(this.#getGaugeIcon(), 'text/html').body.children[0]);
     
     this.#registerEventListeners();
   }
@@ -210,28 +208,6 @@ class FormComponent extends HTMLElement {
   
   #getAwg() {
     return parseInt(document.querySelector('chainmail-sheet').getAttribute(SheetComponent.attributeNames.awg));
-  }
-  
-  #getGaugeIcon() {
-    return `
-      <div style="border-radius: 50%; display: flex; align-items: center; height: 24px; width: 30px;">
-        <div style="border: 8px solid gray; border-radius: 50%; display: flex; align-items: center; height: 59.375%; width: 59.375%; margin: 0 auto;">
-          <div id="double-arrow" style="display: flex; align-items: center; margin-left: -8px;">          
-            <div id="double-arrow__left" style="border-right: 3px solid yellow; border-top: 2px solid transparent; border-bottom: 2px solid transparent; width: 0; height: 0;"></div>
-            <div id="double-arrow__line" style="background-color: yellow; height: 1px; width: 2px;"></div>
-            <div id="double-arrow__right" style="border-left: 3px solid yellow; border-top: 2px solid transparent; border-bottom: 2px solid transparent; width: 0; height: 0;"></div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-  
-  #getInnerDiameterIcon() {
-    return `
-      <div style="border-radius: 50%; display: flex; align-items: center; height: 64px; width: 64px;">
-        <div style="border: 13px solid gray; border-radius: 50%; height: 38px; width: 38px; margin: 0 auto; outline: 5px solid yellow; outline-offset: -13px;"></div>
-      </div>
-    `;
   }
 }
 customElements.define("chainmail-form", FormComponent);
