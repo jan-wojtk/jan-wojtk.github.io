@@ -57,6 +57,89 @@ class FormComponent extends HTMLElement {
     }
   }
   
+  #renderTemplate() {
+    const parser = new DOMParser();
+    const gauges = GaugeLogic.GetGauges();
+    const innerDiameters = [4, 6, 7, 8];
+    const newTemplate = `
+      <fieldset>
+        <legend>Sheet</legend>
+        <label for="chainmail-form__columns">Columns</label>
+        <input id="chainmail-form__columns" type="number" min="2" step="1" value="10" />
+        
+        <label for="chainmail-form__rows">Rows</label>
+        <input id="chainmail-form__rows" type="number" min="2" step="1" value="6" />
+      </fieldset>
+      
+      <fieldset>
+        <legend>Ring</legend>
+        <label for="chainmail-form__inner-diameter">Inner Diameter</label>
+        <select id="chainmail-form__inner-diameter">
+          ${
+            innerDiameters.map(innerDiameter => {
+              const isValidRingType = EuropeanFourInOneLogic.IsValidRingType(innerDiameter, this.#getAwg());
+              
+              return `
+                <option
+                  value="${innerDiameter}"
+                  ${innerDiameter === this.#getInnerDiameter() ? 'selected' : ''}
+                  ${!isValidRingType ? ' disabled' : ''}
+                  ${!isValidRingType ? ` title="Can't complete a European Four-In-One sheet with AWG ${this.#getAwg()}g and Inner Diameter ${innerDiameter}"` : ''}
+                >${innerDiameter}mm</option>
+              `;
+            }).join('')
+          }
+        </select>
+        
+        <label for="chainmail-form__gauge">Gauge (AWG)</label>
+        <select id="chainmail-form__gauge">
+          ${
+            gauges.map(gauge => {
+              const isValidRingType = EuropeanFourInOneLogic.IsValidRingType(this.#getInnerDiameter(), gauge.awg);
+              
+              return `
+                <option
+                  value="${gauge.awg}"
+                  ${gauge.awg === this.#getAwg() ? 'selected' : ''}
+                  ${!isValidRingType ? 'disabled' : ''}
+                  ${!isValidRingType ? ` title="Can't complete a European Four-In-One sheet with AWG ${gauge.awg}g and Inner Diameter ${this.#getInnerDiameter()}"` : ''}
+                >${gauge.awgGauge} (${gauge.mm})</option>
+              `
+            }).join('')
+          }
+        </select>
+      </fieldset>
+      
+      <fieldset>
+        <legend>View</legend>
+        <label for="chainmail-form__zoom">Zoom</label>
+        <input id="chainmail-form__zoom" type="number" min="50" max="300" step="10" value="200" />
+        
+        <label><input id="chainmail-form__dark-mode" type="checkbox" checked/>Dark Mode</label>
+      </fieldset>
+    `;
+    
+    const fieldsets = parser.parseFromString(newTemplate, 'text/html').body.children;
+    const hasExistingTemplate = !!this.children.length > 0;
+    if(!hasExistingTemplate) { 
+      this.replaceChildren(...fieldsets);    
+    } else {
+      this.replaceChildren(...fieldsets);
+    }
+    
+    this.#registerEventListeners();
+  }
+  
+  #registerEventListeners() {
+    // Register Event Listeners
+    this.#gaugeSelect.addEventListener('change', this.#setGauge.bind(this));
+    this.#innerDiameterSelect.addEventListener('change', this.#setInnerDiameter.bind(this));
+    this.#rowsInput.addEventListener('change', this.#setRows);
+    this.#columnsInput.addEventListener('change', this.#setColumns);
+    this.#zoomInput.addEventListener('change', this.#setZoom);
+    this.#darkModeCheckbox.addEventListener('change', this.#setDarkMode);
+  }
+  
   get #rowsInput() {
     return document.getElementById('chainmail-form__rows');
   }
@@ -82,76 +165,21 @@ class FormComponent extends HTMLElement {
   }
   
   connectedCallback() {
-    const parser = new DOMParser();
-    const template = `
-      <fieldset>
-        <legend>Sheet</legend>
-        <label for="chainmail-form__columns">Columns</label>
-        <input id="chainmail-form__columns" type="number" min="2" step="1" value="10" />
-        
-        <label for="chainmail-form__rows">Rows</label>
-        <input id="chainmail-form__rows" type="number" min="2" step="1" value="6" />
-      </fieldset>
-      
-      <fieldset>
-        <legend>Ring</legend>
-        <label for="chainmail-form__gauge">Gauge (AWG)</label>
-        <select id="chainmail-form__gauge">
-          <option value="20">20g (.812mm)</option>
-          <option value="19">19g (.912mm)</option>
-          <option value="18" selected>18g (1.02mm)</option>
-          <option value="17">17g (1.15mm)</option>
-          <option value="16">16g (1.29mm)</option>
-          <option value="15">15g (1.45mm)</option>
-          <option value="14">14g (1.63mm)</option>
-          <option value="13">13g (1.83mm)</option>
-          <option value="12">12g (2.05mm)</option>
-          <option value="11">11g (2.31mm)</option>
-          <option value="10">10g (2.59mm)</option>
-          <option value="9">9g (2.91mm)</option>
-        </select>
-        
-        <label for="chainmail-form__inner-diameter">Inner Diameter</label>
-        <select id="chainmail-form__inner-diameter">
-          <option value="4" selected>4mm</option>
-          <option value="6">6mm</option>
-          <option value="7">7mm</option>
-          <option value="8">8mm</option>
-        </select>
-      </fieldset>
-      
-      <fieldset>
-        <legend>View</legend>
-        <label for="chainmail-form__zoom">Zoom</label>
-        <input id="chainmail-form__zoom" type="number" min="50" max="300" step="10" value="200" />
-        
-        <label><input id="chainmail-form__dark-mode" type="checkbox" checked/>Dark Mode</label>
-      </fieldset>
-    `;
-    const fieldsets = parser.parseFromString(template, 'text/html').body.children;
-    while(fieldsets.length > 0) this.appendChild(fieldsets[0]);
-    
     // Render styles
+    this.#renderTemplate();
     this.#renderStyles();
-      
-      
-    // Register Event Listeners
-    this.#gaugeSelect.addEventListener('change', this.#setGauge);
-    this.#innerDiameterSelect.addEventListener('change', this.#setInnerDiameter);
-    this.#rowsInput.addEventListener('change', this.#setRows);
-    this.#columnsInput.addEventListener('change', this.#setColumns);
-    this.#zoomInput.addEventListener('change', this.#setZoom);
-    this.#darkModeCheckbox.addEventListener('change', this.#setDarkMode);
   }
   
   #setGauge(event) {
     const newValue = event.target.value;
     document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.awg, newValue);
+    this.#renderTemplate();
   }
   
   #setInnerDiameter(event) {
     const newValue = event.target.value;
     document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.innerDiameter, newValue);
+    this.#renderTemplate();
   }
   
   #setRows(event) {
@@ -172,6 +200,14 @@ class FormComponent extends HTMLElement {
   #setDarkMode(event) {
     if(event.target.checked) document.body.classList.add('dark-mode');
     if(!event.target.checked) document.body.classList.remove('dark-mode');
+  }
+  
+  #getInnerDiameter() {
+    return parseInt(document.querySelector('chainmail-sheet').getAttribute(SheetComponent.attributeNames.innerDiameter));
+  }
+  
+  #getAwg() {
+    return parseInt(document.querySelector('chainmail-sheet').getAttribute(SheetComponent.attributeNames.awg));
   }
 }
 customElements.define("chainmail-form", FormComponent);

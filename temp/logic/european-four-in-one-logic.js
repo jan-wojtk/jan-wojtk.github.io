@@ -1,12 +1,12 @@
-class EuropeanFourInOne {
+class EuropeanFourInOneLogic {
   constructor(innerDiameter, awg) {
     this.RingType = new Ring(innerDiameter, awg);
   }
   
-  static IsValidRingType(ring) {
-    return EuropeanFourInOne.#validRingTypes.find(validRing => {
-      return validRing.awg === ring.awg
-          && validRing.innerDiameter === ring.innerDiameter;
+  static IsValidRingType(innerDiameter, awg) {
+    return EuropeanFourInOneLogic.#validRingTypes.find(validRing => {
+      return validRing.gauge.awg === awg
+          && validRing.innerDiameter === innerDiameter;
     });
   }
   
