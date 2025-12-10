@@ -97,18 +97,18 @@ class FormComponent extends HTMLElement {
         <legend>Ring</legend>
         <label for="chainmail-form__gauge">Gauge (AWG)</label>
         <select id="chainmail-form__gauge">
-          <option value=".812">20g (.812mm)</option>
-          <option value=".912">19g (.912mm)</option>
-          <option value="1.02" selected>18g (1.02mm)</option>
-          <option value="1.15">17g (1.15mm)</option>
-          <option value="1.29">16g (1.29mm)</option>
-          <option value="1.45">15g (1.45mm)</option>
-          <option value="1.63">14g (1.63mm)</option>
-          <option value="1.83">13g (1.83mm)</option>
-          <option value="2.05">12g (2.05mm)</option>
-          <option value="2.31">11g (2.31mm)</option>
-          <option value="2.59">10g (2.59mm)</option>
-          <option value="2.91">9g (2.91mm)</option>
+          <option value="20">20g (.812mm)</option>
+          <option value="19">19g (.912mm)</option>
+          <option value="18" selected>18g (1.02mm)</option>
+          <option value="17">17g (1.15mm)</option>
+          <option value="16">16g (1.29mm)</option>
+          <option value="15">15g (1.45mm)</option>
+          <option value="14">14g (1.63mm)</option>
+          <option value="13">13g (1.83mm)</option>
+          <option value="12">12g (2.05mm)</option>
+          <option value="11">11g (2.31mm)</option>
+          <option value="10">10g (2.59mm)</option>
+          <option value="9">9g (2.91mm)</option>
         </select>
         
         <label for="chainmail-form__inner-diameter">Inner Diameter</label>
@@ -146,12 +146,12 @@ class FormComponent extends HTMLElement {
   
   #setGauge(event) {
     const newValue = event.target.value;
-    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.gaugeMm, newValue);
+    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.awg, newValue);
   }
   
   #setInnerDiameter(event) {
     const newValue = event.target.value;
-    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.innerDiameterMm, newValue);
+    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.innerDiameter, newValue);
   }
   
   #setRows(event) {

@@ -6,26 +6,26 @@ class RingComponent extends HTMLElement {
   // Attributes
   static attributeNames = {
     color: 'color',
-    gaugeMm: 'gauge-mm',
-    innerDiameterMm: 'inner-diameter-mm',
+    awg: 'awg',
+    innerDiameter: 'inner-diameter',
     outlineColor: 'outline-color',
     rotate180: 'rotate-180'
   };
-  static observedAttributes = Object.values(this.attributeNames);
+  static observedAttributes = Object.values(RingComponent.attributeNames);
   
   #color = 'sandybrown';
-  #innerDiameterMm = 4;
-  #gaugeMm = 1.02;
+  #innerDiameter = 4;
+  #awg = 18;
   #outlineColor = '#888888';
   #rotate180 = false;
   
   // Attribute Callbacks
   attributeChangedCallback(name, oldValue, newValue) {
     if(RingComponent.attributeNames.color === name) this.#color = newValue;
-    if(RingComponent.attributeNames.gaugeMm === name) this.#onChangeGauge(newValue);
-    if(RingComponent.attributeNames.innerDiameterMm === name) this.#onChangeInnerDiameter(newValue);
+    if(RingComponent.attributeNames.awg === name) this.#onChangeAwg(newValue);
+    if(RingComponent.attributeNames.innerDiameter === name) this.#onChangeInnerDiameter(newValue);
     if(RingComponent.attributeNames.outlineColor === name) this.#outlineColor = newValue;
-    if(RingComponent.attributeNames.rotate180 === name) this.#onChangeRotate180(newValue)
+    if(RingComponent.attributeNames.rotate180 === name) this.#onChangeRotate180(newValue);
   }
   
   // Attribute Setters
@@ -33,17 +33,21 @@ class RingComponent extends HTMLElement {
     this.#rotate180 = newValue === "true"; // casting string to boolean
   }
   
-  #onChangeGauge(newValue) {
-    this.#gaugeMm = parseFloat(newValue);
+  #onChangeAwg(newValue) {
+    this.#awg = parseInt(newValue);
     this.#renderStyles();
   }
   
   #onChangeInnerDiameter(newValue) {
-    this.#innerDiameterMm = parseFloat(newValue);
+    this.#innerDiameter = parseInt(newValue);
     this.#renderStyles();
   }
   
   // Members
+  get #ringType() {
+    return new Ring(this.#innerDiameter, this.#awg);
+  }
+  
   get #styles() {
     return document.getElementById('chainmail-ring-styles');
   }
@@ -51,8 +55,8 @@ class RingComponent extends HTMLElement {
   #renderStyles() {
     // newValue should be a Node of the tag Styles
     const hasExistingStyles = !!this.#styles;
-    const hasNewGauge = !hasExistingStyles || this.#styles.getAttribute('data-gauge-mm') !== `${this.#gaugeMm}`;
-    const hasNewInnerDiameter = !hasExistingStyles || this.#styles.getAttribute('data-inner-diameter-mm') !== `${this.#innerDiameterMm}`;
+    const hasNewGauge = !hasExistingStyles || this.#styles.getAttribute('data-awg') !== `${this.#awg}`;
+    const hasNewInnerDiameter = !hasExistingStyles || this.#styles.getAttribute('data-inner-diameter') !== `${this.#innerDiameter}`;
     const hasNewParameter = hasNewGauge || hasNewInnerDiameter;
     
     if(hasNewParameter) {
@@ -61,16 +65,16 @@ class RingComponent extends HTMLElement {
       const partialCount = 10;
       const outlineWidth = '.75';
       const newStyles = parser.parseFromString(`
-        <style id="chainmail-ring-styles" data-inner-diameter-mm="${this.#innerDiameterMm}" data-gauge-mm="${this.#gaugeMm}">          
+        <style id="chainmail-ring-styles" data-inner-diameter="${this.#innerDiameter}" data-awg="${this.#awg}">          
           chainmail-ring {
             border-color: ${this.#color};
             border-radius: 50%;
             cursor: pointer;
-            height: calc(${(this.#innerDiameterMm + (this.#gaugeMm * 2))}mm - ${outlineWidth}px);
+            height: calc(${(this.#ringType.innerDiameter + (this.#ringType.gauge.millimeters * 2))}mm - ${outlineWidth}px);
             margin-right: ${outlineWidth * 2}px;
             outline: .75px solid ${this.#outlineColor}; /* todo: reflect change from .5px to .75px in calculated css rules */
             overflow: hidden;
-            width: calc(${(this.#innerDiameterMm + (this.#gaugeMm * 2))}mm - ${outlineWidth}px);
+            width: calc(${(this.#ringType.innerDiameter + (this.#ringType.gauge.millimeters * 2))}mm - ${outlineWidth}px);
           }
 
           chainmail-ring > .ring-partial {
@@ -81,14 +85,14 @@ class RingComponent extends HTMLElement {
           }
 
           chainmail-ring > .ring-partial > .ring {
-            border: ${this.#gaugeMm}mm solid;
+            border: ${this.#ringType.gauge.mm} solid;
             border-color: inherit;
             border-radius: 50%;
-            height: ${this.#innerDiameterMm}mm;
+            height: ${this.#innerDiameter}mm;
             outline: ${outlineWidth}px solid ${this.#outlineColor};
-            outline-offset: -${this.#gaugeMm}mm;
+            outline-offset: -${this.#ringType.gauge.mm};
             position: relative;
-            width: ${this.#innerDiameterMm}mm;
+            width: ${this.#innerDiameter}mm;
           }
           
           chainmail-ring:hover {
