@@ -244,7 +244,7 @@ class SheetComponent extends HTMLElement {
         '4': { awg: {
           '20': '-17.5386',
           '19': '-18.35386',
-          '18': '-19.0386',
+          '18': '-19.1386',
         } },
       }
     }.innerDiameter[this.#innerDiameter].awg[this.#awg];
