@@ -44,7 +44,9 @@ class RingComponent extends HTMLElement {
   }
   
   // Members
-  get #ringType() {
+  #sliceCount = 100;
+  
+  get #ring() {
     return new Ring(this.#innerDiameter, this.#awg);
   }
   
@@ -62,7 +64,6 @@ class RingComponent extends HTMLElement {
     if(hasNewParameter) {
       const parser = new DOMParser();
       
-      const partialCount = 10;
       const outlineWidth = '.75';
       const newStyles = parser.parseFromString(`
         <style id="chainmail-ring-styles" data-inner-diameter="${this.#innerDiameter}" data-awg="${this.#awg}">          
@@ -70,27 +71,27 @@ class RingComponent extends HTMLElement {
             border-color: ${this.#color};
             border-radius: 50%;
             cursor: pointer;
-            height: calc(${(this.#ringType.innerDiameter + (this.#ringType.gauge.millimeters * 2))}mm - ${outlineWidth}px);
+            height: calc(${(this.#ring.innerDiameter + (this.#ring.gauge.millimeters * 2))}mm - ${outlineWidth}px);
             margin-right: ${outlineWidth * 2}px;
             outline: .75px solid ${this.#outlineColor}; /* todo: reflect change from .5px to .75px in calculated css rules */
             overflow: hidden;
-            width: calc(${(this.#ringType.innerDiameter + (this.#ringType.gauge.millimeters * 2))}mm - ${outlineWidth}px);
+            width: calc(${(this.#ring.innerDiameter + (this.#ring.gauge.millimeters * 2))}mm - ${outlineWidth}px);
           }
 
-          chainmail-ring > .ring-partial {
+          chainmail-ring > .ring-slice {
             border-color: inherit;
             overflow: hidden;
-            height: ${100/partialCount}%;
+            height: ${100/this.#sliceCount}%;
             width: 100%;
           }
 
-          chainmail-ring > .ring-partial > .ring {
-            border: ${this.#ringType.gauge.mm} solid;
+          chainmail-ring > .ring-slice > .ring {
+            border: ${this.#ring.gauge.mm} solid;
             border-color: inherit;
             border-radius: 50%;
             height: ${this.#innerDiameter}mm;
             outline: ${outlineWidth}px solid ${this.#outlineColor};
-            outline-offset: -${this.#ringType.gauge.mm};
+            outline-offset: -${this.#ring.gauge.mm};
             position: relative;
             width: ${this.#innerDiameter}mm;
           }
@@ -106,39 +107,38 @@ class RingComponent extends HTMLElement {
     }
   }
   
-  connectedCallback() {
+  #renderTemplate() {
     const parser = new DOMParser();
+    const zIndexMax = this.#sliceCount * 100;
+    const zIndexMin = -zIndexMax;
+    const zIndexIncrement = (-zIndexMin + zIndexMax) / this.#sliceCount;
     
-    // Render template (todo, write logic for the z-index values)
-    // Remember to avoid zIndex conflicts by using 1 instead of 0 (such as: 0 === -0 but 1 !== -1)
-    const partialCount = 10;
-    //const zIndexes3 = { 0: -100, 1: 1, 2: 100 };
-    //const zIndexes5 = { 0: -100, 1: -50, 2: 1, 3: 50, 4: 100 };
-    const zIndexes10 = { 0: -100, 1: -80, 2: -60, 3: -40, 4: -20, 5: 1, 6: 20, 7: 40, 8: 60, 9: 80, 10: 100 };
-    const partialsV2 = parser.parseFromString(
-      Array(partialCount).fill(null).map((value, index) => {
-        let zIndex = zIndexes10[index];
-        
-        if(this.#rotate180) {
-          zIndex = zIndex * -1;
-        }
-        
-        return `
-          <div class="ring-partial">
-            <div class="ring"
-              style="
-                top: -${100*index}%;
-                z-index: ${zIndex};
-              "
-            ></div>
-          </div>
-        `;
-      }).join(''), 'text/html'
-    ).body.children;
-    while(partialsV2.length > 0) this.appendChild(partialsV2[0]);
-    
-    // Render styles
+    let template = '';
+    for(let i = 0; i < this.#sliceCount; i++) {
+      // Avoid zIndex conflicts by using 1 instead of 0 (because 0 === -0 but 1 !== -1)
+      let zIndex = (zIndexMin + (zIndexIncrement * i)) || 1;
+      
+      // Rotate ring 180deg without using rotate (avoid due to stacking context)
+      if(this.#rotate180) zIndex = zIndex * -1;
+      
+      template += `
+        <div class="ring-slice">
+          <div class="ring"
+            style="
+              top: -${100*i}%;
+              z-index: ${zIndex};
+            "
+          ></div>
+        </div>
+      `;
+    }
+    const slices = parser.parseFromString(template, 'text/html').body.children;
+    this.replaceChildren(...slices);
+  }
+  
+  connectedCallback() {
     this.#renderStyles();
+    this.#renderTemplate();
     
     // Register event listeners
     this.addEventListener('click', this.handleClick);

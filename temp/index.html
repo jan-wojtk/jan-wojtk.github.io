@@ -6,6 +6,7 @@
         <script src="logic/european-four-in-one-logic.js"></script>
         <script src="components/ring-component.js"></script>
         <script src="components/sheet-component.js"></script>
+        <script src="components/european-six-in-one-component.js"></script>
         <script src="components/form-component.js"></script>
         <style>
           body {
@@ -50,12 +51,16 @@
     </head>
     <body class="dark-mode">
       <main style="zoom: 2;">
-        <chainmail-sheet
+        <!--chainmail-sheet
           rows="10"
           columns="6"
           awg="18"
           inner-diameter="4"
-        ></chainmail-sheet>
+        ></chainmail-sheet-->
+        <chainmail-sheet-european-six-in-one
+          awg="18"
+          inner-diameter="8"
+        ></chainmail-sheet-european-six-in-one>
       </main>
       <chainmail-form></chainmail-form>
     </body>
