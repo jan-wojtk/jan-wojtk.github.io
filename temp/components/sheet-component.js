@@ -4,19 +4,21 @@ class SheetComponent extends HTMLElement {
   }
   
   // Attributes
-  static attributeNames = { rows: 'rows', columns: 'columns', innerDiameter: "inner-diameter", awg: 'awg' };
+  static attributeNames = { rows: 'rows', columns: 'columns', innerDiameter: "inner-diameter", awg: 'awg', weave: 'weave' };
   static observedAttributes = Object.values(SheetComponent.attributeNames);
   
   #rows = 10;
   #columns = 10;
   #awg = 18;
   #innerDiameter = 4;
+  #weave = 'European Four-In-One';
   
   attributeChangedCallback(name, oldValue, newValue) {
     if(SheetComponent.attributeNames.rows === name) this.#rows = parseInt(newValue);
     if(SheetComponent.attributeNames.columns === name) this.#columns = parseInt(newValue);
     if(SheetComponent.attributeNames.awg === name) this.#onChangeAwg(newValue);
     if(SheetComponent.attributeNames.innerDiameter === name) this.#onChangeInnerDiameter(newValue);
+    if(SheetComponent.attributeNames.weave === name) this.#onChangeWeave(newValue);
   }
   
   get #ringType() {
@@ -33,25 +35,26 @@ class SheetComponent extends HTMLElement {
   
   #renderStyles() {
     const hasExistingStyles = !!this.#styles;
+    const hasNewWeave = !hasExistingStyles || this.#styles.getAttribute('data-weave') !== `${this.#weave}`;
     const hasNewGauge = !hasExistingStyles || this.#styles.getAttribute('data-awg') !== `${this.#awg}`;
     const hasNewInnerDiameter = !hasExistingStyles || this.#styles?.getAttribute('data-inner-diameter') !== `${this.#innerDiameter}`;
-    const hasNewParameter = hasNewGauge || hasNewInnerDiameter;
+    const hasNewParameter = hasNewWeave || hasNewGauge || hasNewInnerDiameter;
     
     if(hasNewParameter) {
       const parser = new DOMParser();
       const newStyles = parser.parseFromString(`
-        <style id="chainmail-sheet-styles" data-awg="${this.#awg}" data-inner-diameter="${this.#innerDiameter}">
+        <style id="chainmail-sheet-styles" data-weave="${this.#weave}" data-awg="${this.#awg}" data-inner-diameter="${this.#innerDiameter}">
           chainmail-sheet > .row {
             display: flex;
             flex-direction:row;
           }
           
           chainmail-sheet > .row ~ .row {
-            margin-top: ${this.#getRowMarginTopForRingType()};
+            margin-top: ${this.#getRowMarginTop()};
           }
           
           chainmail-sheet > .row:nth-child(even) {
-            margin-left: ${this.#getRowMarginLeftForRingType()};
+            margin-left: ${this.#getRowMarginLeft()};
           }
         </style>
       `, 'text/html').head.children[0];
@@ -81,6 +84,11 @@ class SheetComponent extends HTMLElement {
     this.#setAllRingAttributes(RingComponent.attributeNames.innerDiameter, this.#innerDiameter);
   }
   
+  #onChangeWeave(newValue) {
+    this.#weave = newValue;
+    this.#renderStyles();
+  }
+  
   connectedCallback() {
     const parser = new DOMParser();
     
@@ -107,7 +115,17 @@ class SheetComponent extends HTMLElement {
     this.addEventListener('click', this.handleClick);
   }
   
-  #getRowMarginTopForRingType() {
+  #getRowMarginLeft() {
+    if(WeaveLogic.IsEuropeanFourInOne(this.#weave)) return this.#getRowMarginLeftForEuropeanFourInOne();
+    if(WeaveLogic.IsEuropeanSixInOne(this.#weave)) return this.#getRowMarginLeftForEuropeanSixInOne();
+  }
+  
+  #getRowMarginTop() {
+    if(WeaveLogic.IsEuropeanFourInOne(this.#weave)) return this.#getRowMarginTopForEuropeanFourInOne();
+    if(WeaveLogic.IsEuropeanSixInOne(this.#weave)) return this.#getRowMarginTopForEuropeanSixInOne();
+  }
+  
+  #getRowMarginTopForEuropeanFourInOne() {
     // todo: rewrite this for readability using the Ring class
     // todo: make real formulas for these trends
     return {
@@ -162,7 +180,7 @@ class SheetComponent extends HTMLElement {
     }.innerDiameter[this.#innerDiameter].awg[this.#awg];
   }
   
-  #getRowMarginLeftForRingType() {
+  #getRowMarginLeftForEuropeanFourInOne() {
     // todo: rewrite this for readability using the Ring class
     // todo: make real formulas for these trends
     // todo: add .5 to each
@@ -213,6 +231,34 @@ class SheetComponent extends HTMLElement {
           '11': '24.8386',
           '10': '25.8',
           '9': '26.8386'
+        } },
+      }
+    }.innerDiameter[this.#innerDiameter].awg[this.#awg]);
+  }
+  
+  #getRowMarginTopForEuropeanSixInOne() {
+    // todo: rewrite this for readability using the Ring class
+    // todo: make real formulas for these trends
+    return {
+      innerDiameter: {
+        '4': { awg: {
+          '20': '-17.5386',
+          '19': '-18.35386',
+          '18': '-19.0386',
+        } },
+      }
+    }.innerDiameter[this.#innerDiameter].awg[this.#awg];
+  }
+  
+  #getRowMarginLeftForEuropeanSixInOne() {
+    // todo: rewrite this for readability using the Ring class
+    // todo: make real formulas for these trends
+    return ({
+      innerDiameter: {
+        '4': { awg: {
+          '20': '10.8386',
+          '19': '11.1386',
+          '18': '11.3386',
         } },
       }
     }.innerDiameter[this.#innerDiameter].awg[this.#awg]);

@@ -59,11 +59,35 @@ class FormComponent extends HTMLElement {
   
   #renderTemplate() {
     const parser = new DOMParser();
+    const weaves = WeaveLogic.GetWeaves();
     const gauges = GaugeLogic.GetGauges();
     const innerDiameters = [4, 6, 7, 8];
+    
+    const currentWeaveName = this.#getWeave();
+    const currentAwg = this.#getAwg();
+    const currentInnerDiameter = this.#getInnerDiameter();
+
+    // todo: move this into a factory
+    const currentWeaveLogic = 
+      WeaveLogic.IsEuropeanFourInOne(currentWeaveName) ? EuropeanFourInOneLogic
+      : WeaveLogic.IsEuropeanSixInOne(currentWeaveName) ? EuropeanSixInOneLogic
+      : null;
+    
     const newTemplate = `
       <fieldset>
         <legend>Sheet</legend>
+        <label for="chainmail-form__weave">Weave</label>
+        <select id="chainmail-form__weave">
+          ${
+            weaves.map(weave => `
+              <option
+                value="${weave.name}"
+                ${weave.name === this.#getWeave() ? 'selected' : ''}
+              >${weave.name}</option>
+            `).join('')
+          }
+        </select>
+        
         <label for="chainmail-form__columns">Columns</label>
         <input id="chainmail-form__columns" type="number" min="2" step="1" value="10" />
         
@@ -77,14 +101,14 @@ class FormComponent extends HTMLElement {
         <select id="chainmail-form__inner-diameter">
           ${
             innerDiameters.map(innerDiameter => {
-              const isValidRingType = EuropeanFourInOneLogic.IsValidRingType(innerDiameter, this.#getAwg());
+              const isValidRingType = currentWeaveLogic.IsValidRingType(innerDiameter, this.#getAwg());
               
               return `
                 <option
                   value="${innerDiameter}"
                   ${innerDiameter === this.#getInnerDiameter() ? 'selected' : ''}
                   ${!isValidRingType ? ' disabled' : ''}
-                  ${!isValidRingType ? ` title="Can't complete a European Four-In-One sheet with AWG ${this.#getAwg()}g and Inner Diameter ${innerDiameter}"` : ''}
+                  ${!isValidRingType ? ` title="Can't complete a ${currentWeaveName} with AWG ${this.#getAwg()}g and Inner Diameter ${innerDiameter}"` : ''}
                 >${innerDiameter}mm</option>
               `;
             }).join('')
@@ -95,14 +119,14 @@ class FormComponent extends HTMLElement {
         <select id="chainmail-form__gauge">
           ${
             gauges.map(gauge => {
-              const isValidRingType = EuropeanFourInOneLogic.IsValidRingType(this.#getInnerDiameter(), gauge.awg);
+              const isValidRingType = currentWeaveLogic.IsValidRingType(this.#getInnerDiameter(), gauge.awg);
               
               return `
                 <option
                   value="${gauge.awg}"
                   ${gauge.awg === this.#getAwg() ? 'selected' : ''}
                   ${!isValidRingType ? 'disabled' : ''}
-                  ${!isValidRingType ? ` title="Can't complete a European Four-In-One sheet with AWG ${gauge.awg}g and Inner Diameter ${this.#getInnerDiameter()}"` : ''}
+                  ${!isValidRingType ? ` title="Can't complete a ${currentWeaveName} with AWG ${gauge.awg}g and Inner Diameter ${this.#getInnerDiameter()}"` : ''}
                 >${gauge.awgGauge} (${gauge.mm})</option>
               `
             }).join('')
@@ -113,7 +137,7 @@ class FormComponent extends HTMLElement {
       <fieldset>
         <legend>View</legend>
         <label for="chainmail-form__zoom">Zoom</label>
-        <input id="chainmail-form__zoom" type="number" min="50" max="300" step="10" value="200" />
+        <input id="chainmail-form__zoom" type="number" min="50" max="300" step="10" value="${this.#getZoom()}" />
         
         <label><input id="chainmail-form__dark-mode" type="checkbox" checked/>Dark Mode</label>
       </fieldset>
@@ -132,12 +156,17 @@ class FormComponent extends HTMLElement {
   
   #registerEventListeners() {
     // Register Event Listeners
+    this.#weaveSelect.addEventListener('change', this.#setWeave.bind(this));
     this.#gaugeSelect.addEventListener('change', this.#setGauge.bind(this));
     this.#innerDiameterSelect.addEventListener('change', this.#setInnerDiameter.bind(this));
     this.#rowsInput.addEventListener('change', this.#setRows);
     this.#columnsInput.addEventListener('change', this.#setColumns);
     this.#zoomInput.addEventListener('change', this.#setZoom);
     this.#darkModeCheckbox.addEventListener('change', this.#setDarkMode);
+  }
+  
+  get #weaveSelect() {
+    return document.getElementById('chainmail-form__weave');
   }
   
   get #rowsInput() {
@@ -168,6 +197,14 @@ class FormComponent extends HTMLElement {
     // Render styles
     this.#renderTemplate();
     this.#renderStyles();
+  }
+  
+  #setWeave(event) {
+    const newValue = event.target.value;
+    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.awg, 18);
+    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.innerDiameter, 4);
+    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.weave, newValue);
+    this.#renderTemplate();
   }
   
   #setGauge(event) {
@@ -202,12 +239,20 @@ class FormComponent extends HTMLElement {
     if(!event.target.checked) document.body.classList.remove('dark-mode');
   }
   
+  #getWeave() {
+    return document.querySelector('chainmail-sheet').getAttribute(SheetComponent.attributeNames.weave);
+  }
+  
   #getInnerDiameter() {
     return parseInt(document.querySelector('chainmail-sheet').getAttribute(SheetComponent.attributeNames.innerDiameter));
   }
   
   #getAwg() {
     return parseInt(document.querySelector('chainmail-sheet').getAttribute(SheetComponent.attributeNames.awg));
+  }
+  
+  #getZoom() {
+    return parseInt(parseFloat(document.querySelector('main').style.zoom) * 100);
   }
 }
 customElements.define("chainmail-form", FormComponent);

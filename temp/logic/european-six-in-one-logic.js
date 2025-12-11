@@ -1,10 +1,10 @@
-class EuropeanFourInOneLogic {
+class EuropeanSixInOneLogic {
   constructor(innerDiameter, awg) {
     this.RingType = new Ring(innerDiameter, awg);
   }
   
   static IsValidRingType(innerDiameter, awg) {
-    return EuropeanFourInOneLogic.#validRingTypes.find(validRing => {
+    return EuropeanSixInOneLogic.#validRingTypes.find(validRing => {
       return validRing.gauge.awg === awg
           && validRing.innerDiameter === innerDiameter;
     });
