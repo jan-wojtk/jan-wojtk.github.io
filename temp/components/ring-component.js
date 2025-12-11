@@ -16,7 +16,7 @@ class RingComponent extends HTMLElement {
   #color = 'sandybrown';
   #innerDiameter = 4;
   #awg = 18;
-  #outlineColor = '#888888';
+  #outlineColor = '#666666';// light mode: '#888888';
   #rotate180 = false;
   
   // Attribute Callbacks
@@ -44,7 +44,7 @@ class RingComponent extends HTMLElement {
   }
   
   // Members
-  #sliceCount = 100;
+  #sliceCount = 10;
   
   get #ring() {
     return new Ring(this.#innerDiameter, this.#awg);
@@ -71,11 +71,10 @@ class RingComponent extends HTMLElement {
             border-color: ${this.#color};
             border-radius: 50%;
             cursor: pointer;
-            height: calc(${(this.#ring.innerDiameter + (this.#ring.gauge.millimeters * 2))}mm - ${outlineWidth}px);
+            height: ${this.#ring.innerDiameter + (this.#ring.gauge.millimeters * 2)}mm;
             margin-right: ${outlineWidth * 2}px;
-            outline: .75px solid ${this.#outlineColor}; /* todo: reflect change from .5px to .75px in calculated css rules */
             overflow: hidden;
-            width: calc(${(this.#ring.innerDiameter + (this.#ring.gauge.millimeters * 2))}mm - ${outlineWidth}px);
+            width: ${this.#ring.innerDiameter + (this.#ring.gauge.millimeters * 2)}mm;
           }
 
           chainmail-ring > .ring-slice {
@@ -91,9 +90,16 @@ class RingComponent extends HTMLElement {
             border-radius: 50%;
             height: ${this.#innerDiameter}mm;
             outline: ${outlineWidth}px solid ${this.#outlineColor};
-            outline-offset: -${this.#ring.gauge.mm};
+            outline-offset: -${outlineWidth}px;
             position: relative;
             width: ${this.#innerDiameter}mm;
+          }
+          
+          chainmail-ring > .ring-slice > .ring > .ring__inner-outline {
+            outline: ${outlineWidth}px solid ${this.#outlineColor};
+            border-radius: 50%;
+            height: 100%;
+            width: 100%;
           }
           
           chainmail-ring:hover {
@@ -123,12 +129,11 @@ class RingComponent extends HTMLElement {
       
       template += `
         <div class="ring-slice">
-          <div class="ring"
-            style="
-              top: -${100*i}%;
-              z-index: ${zIndex};
-            "
-          ></div>
+          <div class="ring" style="top: -${100*i}%; z-index: ${zIndex};">
+            <div class="ring__inner-outline">
+            </div>
+          </div>
+          
         </div>
       `;
     }

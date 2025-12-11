@@ -16,7 +16,7 @@ class EuropeanFourInOneLogic {
     new Ring(4, 18),
     new Ring(4, 17),
     new Ring(4, 16),
-    new Ring(4, 15),
+    //new Ring(4, 15),
     
     new Ring(6, 20),
     new Ring(6, 19),
@@ -38,7 +38,7 @@ class EuropeanFourInOneLogic {
     new Ring(7, 13),
     new Ring(7, 12),
     new Ring(7, 11),
-    new Ring(7, 10),
+    //new Ring(7, 10),
     
     new Ring(8, 20),
     new Ring(8, 19),
