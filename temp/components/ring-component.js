@@ -44,7 +44,7 @@ class RingComponent extends HTMLElement {
   }
   
   // Members
-  #sliceCount = 15;
+  #sliceCount = 50;
   
   get #ring() {
     return new Ring(this.#innerDiameter, this.#awg);
@@ -72,7 +72,6 @@ class RingComponent extends HTMLElement {
             border-radius: 50%;
             cursor: pointer;
             height: ${this.#ring.innerDiameter + (this.#ring.gauge.millimeters * 2)}mm;
-            margin-right: ${outlineWidth * 2}px;
             overflow: hidden;
             width: ${this.#ring.innerDiameter + (this.#ring.gauge.millimeters * 2)}mm;
           }
