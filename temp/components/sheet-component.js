@@ -54,7 +54,7 @@ class SheetComponent extends HTMLElement {
           }
           
           chainmail-sheet > .row:nth-child(even) {
-            margin-left: ${this.#getRowMarginLeft()};
+            margin-left: ${((this.#innerDiameter + (GaugeLogic.GetGaugeByAwg(this.#awg).millimeters * 2)) / 2)}mm;
           }
         </style>
       `, 'text/html').head.children[0];
@@ -113,11 +113,6 @@ class SheetComponent extends HTMLElement {
     
     // Register event listeners
     this.addEventListener('click', this.handleClick);
-  }
-  
-  #getRowMarginLeft() {
-    if(WeaveLogic.IsEuropeanFourInOne(this.#weave)) return this.#getRowMarginLeftForEuropeanFourInOne();
-    if(WeaveLogic.IsEuropeanSixInOne(this.#weave)) return this.#getRowMarginLeftForEuropeanSixInOne();
   }
   
   #getRowMarginTop() {
@@ -182,64 +177,6 @@ class SheetComponent extends HTMLElement {
     }.innerDiameter[this.#innerDiameter].awg[this.#awg];
   }
   
-  #getRowMarginLeftForEuropeanFourInOne() {
-    // todo: rewrite this for readability using the Ring class
-    // todo: make real formulas for these trends
-    // todo: add .5 to each
-    return ({
-      innerDiameter: {
-        '4': { awg: {
-          '20': '10.3386',
-          '19': '10.8386',
-          '18': '11.0386',
-          '17': '11.8386',
-          '16': '12.3386',
-          '15': '13.0386',
-          '14': '13.5386',
-        } },
-        '6': { awg: {
-          '20': '14.5386',
-          '19': '14.7386',
-          '18': '15.2386',
-          '17': '15.5386',
-          '16': '16.0386',
-          '15': '16.8386',
-          '14': '17.5386',
-          '13': '18.2386',
-          '12': '19.0886',
-          '11': '20.0886',
-        } },
-        '7': { awg: {
-          '20': '16.2386',
-          '19': '16.5386',
-          '18': '17.1386',
-          '17': '17.5386',
-          '16': '17.9386',
-          '15': '18.7386',
-          '14': '19.5386',
-          '13': '20.0386',
-          '12': '20.8386',
-          '11': '22.0386',
-          '10': '23.0886',
-        } },
-        '8': { awg: {
-          '20': '18.3386',
-          '19': '18.8386',
-          '18': '18.8386',
-          '17': '19.3386',
-          '16': '20.0386',
-          '15': '20.5',
-          '14': '21.3386',
-          '13': '22.0386',
-          '12': '22.8386',
-          '11': '23.8386',
-          '10': '24.8',
-          '9': '26.1386'
-        } },
-      }
-    }.innerDiameter[this.#innerDiameter].awg[this.#awg]);
-  }
-  
   #getRowMarginTopForEuropeanSixInOne() {
     // todo: rewrite this for readability using the Ring class
     // todo: make real formulas for these trends
@@ -252,20 +189,6 @@ class SheetComponent extends HTMLElement {
         } },
       }
     }.innerDiameter[this.#innerDiameter].awg[this.#awg];
-  }
-  
-  #getRowMarginLeftForEuropeanSixInOne() {
-    // todo: rewrite this for readability using the Ring class
-    // todo: make real formulas for these trends
-    return ({
-      innerDiameter: {
-        '4': { awg: {
-          '20': '10.8386',
-          '19': '11.1386',
-          '18': '11.3386',
-        } },
-      }
-    }.innerDiameter[this.#innerDiameter].awg[this.#awg]);
   }
 }
 customElements.define("chainmail-sheet", SheetComponent);
