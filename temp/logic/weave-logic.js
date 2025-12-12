@@ -1,25 +1,26 @@
-class Weave {
-  constructor(name) {
-    this.name = name;
-  }
-}
-
 class WeaveLogic {
-  static #europeanFourInOneName = 'European Four-In-One';
-  static #europeanSixInOneName = 'European Six-In-One';
+  static #weaves = {
+    EuropeanFourInOne: new Weave('European Four-In-One'),
+    EuropeanSixInOne: new Weave('European Six-In-One'),
+  }
   
   static GetWeaves() {
-    return [
-      new Weave(WeaveLogic.#europeanFourInOneName),
-      new Weave(WeaveLogic.#europeanSixInOneName)
-    ];
+    return Object.values(WeaveLogic.#weaves);
+  }
+  
+  static GetWeaveByName(name) {
+    return Object.values(WeaveLogic.Weaves).find(x => x.name === name)
+  }
+  
+  static IsEqual(weaveOne, weaveTwo) {
+    return weaveOne?.name === weaveTwo?.name;
   }
   
   static IsEuropeanFourInOne(weaveName) {
-    return weaveName === WeaveLogic.#europeanFourInOneName;
+    return weaveName === WeaveLogic.#weaves.EuropeanFourInOne.name;
   }
   
   static IsEuropeanSixInOne(weaveName) {
-    return weaveName === WeaveLogic.#europeanSixInOneName;
+    return weaveName === WeaveLogic.#weaves.EuropeanSixInOne.name;
   }
 }

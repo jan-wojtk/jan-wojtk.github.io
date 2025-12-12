@@ -1,13 +1,3 @@
-class Gauge  {
-  constructor(awg, millimeters) {
-    this.awg = awg;
-    this.millimeters = millimeters;
-    
-    this.awgGauge = this.awg + 'g';
-    this.mm = this.millimeters + 'mm';
-  }
-}
-
 class GaugeLogic {
   static #gauges = [
     new Gauge(9, 2.91),
