@@ -4,21 +4,25 @@ class SheetComponent extends HTMLElement {
   }
   
   // Attributes
-  static attributeNames = { rows: 'rows', columns: 'columns', innerDiameter: "inner-diameter", awg: 'awg', weave: 'weave' };
+  static attributeNames = { rows: 'rows', columns: 'columns', innerDiameter: "inner-diameter", awg: 'awg', weave: 'weave', layer: 'layer', color: 'color' };
   static observedAttributes = Object.values(SheetComponent.attributeNames);
   
-  #rows = 10;
-  #columns = 10;
-  #awg = 18;
-  #innerDiameter = 4;
-  #weave = 'European Four-In-One';
+  #color;
+  #rows;// = 10;
+  #columns;// = 10;
+  #awg;// = 18;
+  #innerDiameter;// = 4;
+  #weave;// = 'European Four-In-One';
+  #layer;// = 1;
   
   attributeChangedCallback(name, oldValue, newValue) {
+    if(SheetComponent.attributeNames.color === name) this.#onChangeColor(newValue);
     if(SheetComponent.attributeNames.rows === name) this.#rows = parseInt(newValue);
     if(SheetComponent.attributeNames.columns === name) this.#columns = parseInt(newValue);
     if(SheetComponent.attributeNames.awg === name) this.#onChangeAwg(newValue);
     if(SheetComponent.attributeNames.innerDiameter === name) this.#onChangeInnerDiameter(newValue);
     if(SheetComponent.attributeNames.weave === name) this.#onChangeWeave(newValue);
+    if(SheetComponent.attributeNames.layer === name) this.#layer = parseInt(newValue);
   }
   
   get #ringType() {
@@ -30,7 +34,10 @@ class SheetComponent extends HTMLElement {
   }
   
   get #styles() {
-    return document.getElementById('chainmail-sheet-styles');
+    const selector = `.chainmail-sheet-styles[data-layer="${this.#layer}"]`;
+    const result = document.querySelector(selector);
+    
+    return result;
   }
   
   #renderStyles() {
@@ -38,22 +45,28 @@ class SheetComponent extends HTMLElement {
     const hasNewWeave = !hasExistingStyles || this.#styles.getAttribute('data-weave') !== `${this.#weave}`;
     const hasNewGauge = !hasExistingStyles || this.#styles.getAttribute('data-awg') !== `${this.#awg}`;
     const hasNewInnerDiameter = !hasExistingStyles || this.#styles?.getAttribute('data-inner-diameter') !== `${this.#innerDiameter}`;
-    const hasNewParameter = hasNewWeave || hasNewGauge || hasNewInnerDiameter;
-    
+    const hasNewLayer = !hasExistingStyles || this.#styles?.getAttribute('data-layer') !== `${this.#layer}`;
+    const hasNewParameter = hasNewWeave || hasNewGauge || hasNewInnerDiameter || hasNewLayer;
+    console.log(this.#layer, this.#weave);
     if(hasNewParameter) {
       const parser = new DOMParser();
       const newStyles = parser.parseFromString(`
-        <style id="chainmail-sheet-styles" data-weave="${this.#weave}" data-awg="${this.#awg}" data-inner-diameter="${this.#innerDiameter}">
-          chainmail-sheet > .row {
+        <style class="chainmail-sheet-styles" data-weave="${this.#weave}" data-awg="${this.#awg}" data-inner-diameter="${this.#innerDiameter}" data-layer="${this.#layer}">
+          chainmail-sheet[layer="${this.#layer}"] {
+            position: absolute;
+            z-index: -${this.#layer};
+          }
+          
+          chainmail-sheet[layer="${this.#layer}"] > .row {
             display: flex;
             flex-direction:row;
           }
           
-          chainmail-sheet > .row ~ .row {
+          chainmail-sheet[layer="${this.#layer}"] > .row ~ .row {
             margin-top: ${this.#getRowMarginTop()};
           }
           
-          chainmail-sheet > .row:nth-child(even) {
+          chainmail-sheet[layer="${this.#layer}"] > .row:nth-child(even) {
             margin-left: ${((this.#innerDiameter + (GaugeLogic.GetGaugeByAwg(this.#awg).millimeters * 2)) / 2)}mm;
           }
         </style>
@@ -89,7 +102,17 @@ class SheetComponent extends HTMLElement {
     this.#renderStyles();
   }
   
-  connectedCallback() {
+  #onChangeLayer(newValue) {
+    this.#layer = parseInt(newValue);
+    this.#renderStyles();
+  }
+  
+  #onChangeColor(newValue) {
+    this.#color = newValue;
+    this.#renderTemplate();
+  }
+  
+  #renderTemplate() {
     const parser = new DOMParser();
     
     // Todo: replace Array.fill iteration for readability
@@ -98,6 +121,7 @@ class SheetComponent extends HTMLElement {
         <div class="row">
           ${Array(this.#columns).fill(null).map((value, index) => `
             <chainmail-ring
+              color="${this.#color}"
               awg="${this.#awg}"
               inner-diameter="${this.#innerDiameter}"
               rotate-180="${rowIndex%2==1}"
@@ -106,10 +130,13 @@ class SheetComponent extends HTMLElement {
         </div>
       `).join(''), 'text/html'
     ).body.children;
-    while(rowList.length > 0) this.appendChild(rowList[0]);
     
-    // Render styles
+    this.replaceChildren(...rowList);
+  }
+  
+  connectedCallback() {
     this.#renderStyles();
+    this.#renderTemplate();
     
     // Register event listeners
     this.addEventListener('click', this.handleClick);

@@ -14,14 +14,14 @@ class RingComponent extends HTMLElement {
   static observedAttributes = Object.values(RingComponent.attributeNames);
   
   #color = 'sandybrown';
-  #innerDiameter = 4;
-  #awg = 18;
+  #innerDiameter;// = 4;
+  #awg;// = 18;
   #outlineColor = '#666666';// light mode: '#888888';
-  #rotate180 = false;
+  #rotate180;// = false;
   
   // Attribute Callbacks
   attributeChangedCallback(name, oldValue, newValue) {
-    if(RingComponent.attributeNames.color === name) this.#color = newValue;
+    if(RingComponent.attributeNames.color === name) this.#onChangeColor(newValue);
     if(RingComponent.attributeNames.awg === name) this.#onChangeAwg(newValue);
     if(RingComponent.attributeNames.innerDiameter === name) this.#onChangeInnerDiameter(newValue);
     if(RingComponent.attributeNames.outlineColor === name) this.#outlineColor = newValue;
@@ -41,6 +41,11 @@ class RingComponent extends HTMLElement {
   #onChangeInnerDiameter(newValue) {
     this.#innerDiameter = parseInt(newValue);
     this.#renderStyles();
+  }
+  
+  #onChangeColor(newValue) {
+    this.#color = newValue;
+    this.#renderTemplate();
   }
   
   // Members
@@ -128,7 +133,7 @@ class RingComponent extends HTMLElement {
       
       template += `
         <div class="ring-slice">
-          <div class="ring" style="top: -${100*i}%; z-index: ${zIndex};">
+          <div class="ring" style="border-color: ${this.#color ? this.#color : 'inherit'}; top: -${100*i}%; z-index: ${zIndex};">
             <div class="ring__inner-outline">
             </div>
           </div>

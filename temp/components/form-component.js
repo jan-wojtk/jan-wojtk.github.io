@@ -1,6 +1,8 @@
 class FormComponent extends HTMLElement {
   
   // Members
+  #activeLayer = 1;
+  
   get #styles() {
     return document.getElementById('chainmail-form-styles');
   }
@@ -252,34 +254,39 @@ class FormComponent extends HTMLElement {
     this.#renderStyles();
   }
   
+  #getActiveSheet() {
+    return document.querySelector(`chainmail-sheet[layer="${this.#activeLayer}"]`);
+  }
+  
   #setWeave(event) {
     const newValue = event.target.value;
-    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.awg, 18);
-    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.innerDiameter, 4);
-    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.weave, newValue);
+    const sheet = this.#getActiveSheet();
+    sheet.setAttribute(SheetComponent.attributeNames.awg, 18);
+    sheet.setAttribute(SheetComponent.attributeNames.innerDiameter, 4);
+    sheet.setAttribute(SheetComponent.attributeNames.weave, newValue);
     this.#renderTemplate();
   }
   
   #setGauge(event) {
     const newValue = event.target.value;
-    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.awg, newValue);
+    this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.awg, newValue);
     this.#renderTemplate();
   }
   
   #setInnerDiameter(event) {
     const newValue = event.target.value;
-    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.innerDiameter, newValue);
+    this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.innerDiameter, newValue);
     this.#renderTemplate();
   }
   
   #setRows(event) {
     const newValue = event.target.value;
-    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.rows, newValue);
+    this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.rows, newValue);
   }
   
   #setColumns(event) {
     const newValue = event.target.value;
-    document.querySelector('chainmail-sheet').setAttribute(SheetComponent.attributeNames.columns, newValue);
+    this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.columns, newValue);
   }
   
   #setZoom(event) {
@@ -293,15 +300,15 @@ class FormComponent extends HTMLElement {
   }
   
   #getWeave() {
-    return document.querySelector('chainmail-sheet').getAttribute(SheetComponent.attributeNames.weave);
+    return this.#getActiveSheet().getAttribute(SheetComponent.attributeNames.weave);
   }
   
   #getInnerDiameter() {
-    return parseInt(document.querySelector('chainmail-sheet').getAttribute(SheetComponent.attributeNames.innerDiameter));
+    return parseInt(this.#getActiveSheet().getAttribute(SheetComponent.attributeNames.innerDiameter));
   }
   
   #getAwg() {
-    return parseInt(document.querySelector('chainmail-sheet').getAttribute(SheetComponent.attributeNames.awg));
+    return parseInt(this.#getActiveSheet().getAttribute(SheetComponent.attributeNames.awg));
   }
   
   #getZoom() {

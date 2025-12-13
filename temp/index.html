@@ -30,6 +30,7 @@
 
           body > chainmail-form {
             border-left: 1px solid #cccccc;
+            order: 2;
             padding: 10px;
             width: 20%;
           }
@@ -40,6 +41,7 @@
             flex-grow: 1;
             height: 100%;
             justify-content: center;
+            order: 1;
             overflow: auto;
           }
           
@@ -60,11 +62,22 @@
     <body class="dark-mode">
       <main style="zoom: 2;">
         <chainmail-sheet
-          rows="10"
+          color="sandybrown"
+          rows="20"
           columns="6"
           awg="18"
           inner-diameter="4"
           weave="European Four-In-One"
+          layer="1"
+        ></chainmail-sheet>
+        <chainmail-sheet
+        color="#cccccc"
+          rows="50"
+          columns="6"
+          awg="18"
+          inner-diameter="4"
+          weave="European Six-In-One"
+          layer="2"
         ></chainmail-sheet>
       </main>
       <chainmail-form></chainmail-form>
