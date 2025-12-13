@@ -24,6 +24,39 @@ class FormComponent extends HTMLElement {
               margin-top: 2em;
             }
             
+            chainmail-form > fieldset > table {
+              border-collapse: collapse;
+              color: #cccccc;
+              width: 100%;
+            }
+            
+            chainmail-form > fieldset > table td, chainmail-form > fieldset > table th {
+              border-right: 1px solid #cccccc;
+              text-align: left;
+            }
+            
+            chainmail-form > fieldset > table tbody td {
+              border-top: 0px solid #cccccc;
+              border-right: 0px solid #cccccc;
+            }
+            
+            chainmail-form table .layer-table__visibility, chainmail-form table .layer-table__remove {
+              border-left: 0px solid #cccccc;
+              font-size: 22px;
+              max-width: 14px;
+              padding-bottom: 4px; /* todo: figure out how to align vertically */
+              text-align: center;
+            }
+            
+            chainmail-form > fieldset > table tbody td:last-child  {
+              border-top: 0px solid #cccccc;
+              border-right: 0px solid #cccccc;
+            }
+            
+            chainmail-form > fieldset > table td:last-child, chainmail-form > fieldset > table th:last-child {
+              border-right: 0px;
+            }
+            
             chainmail-form > fieldset > legend {
               font-size: 18px;
               font-weight: bold;
@@ -66,6 +99,7 @@ class FormComponent extends HTMLElement {
     const currentWeaveName = this.#getWeave();
     const currentAwg = this.#getAwg();
     const currentInnerDiameter = this.#getInnerDiameter();
+    const layerList = LayerLogic.GetLayerList();
 
     // todo: move this into a factory
     const currentWeaveLogic = 
@@ -74,6 +108,25 @@ class FormComponent extends HTMLElement {
       : null;
     
     const newTemplate = `
+      <fieldset>
+        <legend>Layer</legend>
+        <table>
+          <tbody>
+            ${
+              layerList.map(l => `
+                <tr>
+                  <td class="layer-table__visibility" class="lay">${l.hidden ? 'hidden' : '&#x1F441'}</td>
+                  <td>${l.name}</td>
+                  <td class="layer-table__remove">&#10006;</td>
+                </tr>
+              `).join('')
+            }
+            <tr>
+              <td colspan="3" style="border-right: 0px; text-align: center;">&plus; Add New Layer</td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
       <fieldset>
         <legend>Sheet</legend>
         <label for="chainmail-form__weave">Weave</label>
