@@ -7,22 +7,22 @@ class SheetComponent extends HTMLElement {
   static attributeNames = { rows: 'rows', columns: 'columns', innerDiameter: "inner-diameter", awg: 'awg', weave: 'weave', layer: 'layer', color: 'color' };
   static observedAttributes = Object.values(SheetComponent.attributeNames);
   
-  #color;
-  #rows;// = 10;
-  #columns;// = 10;
-  #awg;// = 18;
-  #innerDiameter;// = 4;
-  #weave;// = 'European Four-In-One';
-  #layer;// = 1;
+  get #color() { return this.getAttribute(SheetComponent.attributeNames.color) }
+  get #rows() { return parseInt(this.getAttribute(SheetComponent.attributeNames.rows)) }// = 10;
+  get #columns() { return parseInt(this.getAttribute(SheetComponent.attributeNames.columns)) }// = 10;
+  get #awg() { return parseInt(this.getAttribute(SheetComponent.attributeNames.awg)) }// = 18;
+  get #innerDiameter() { return parseInt(this.getAttribute(SheetComponent.attributeNames.innerDiameter)) }// = 4;
+  get #weave() { return this.getAttribute(SheetComponent.attributeNames.weave) }// = 'European Four-In-One';
+  get #layer() { return parseInt(this.getAttribute(SheetComponent.attributeNames.layer)) }// = 1;
   
   attributeChangedCallback(name, oldValue, newValue) {
     if(SheetComponent.attributeNames.color === name) this.#onChangeColor(newValue);
-    if(SheetComponent.attributeNames.rows === name) this.#rows = parseInt(newValue);
-    if(SheetComponent.attributeNames.columns === name) this.#columns = parseInt(newValue);
+    //if(SheetComponent.attributeNames.rows === name) this.#rows = parseInt(newValue);
+    //if(SheetComponent.attributeNames.columns === name) this.#columns = parseInt(newValue);
     if(SheetComponent.attributeNames.awg === name) this.#onChangeAwg(newValue);
     if(SheetComponent.attributeNames.innerDiameter === name) this.#onChangeInnerDiameter(newValue);
     if(SheetComponent.attributeNames.weave === name) this.#onChangeWeave(newValue);
-    if(SheetComponent.attributeNames.layer === name) this.#layer = parseInt(newValue);
+    if(SheetComponent.attributeNames.layer === name) this.#renderStyles();
   }
   
   get #ringType() {
@@ -47,14 +47,14 @@ class SheetComponent extends HTMLElement {
     const hasNewInnerDiameter = !hasExistingStyles || this.#styles?.getAttribute('data-inner-diameter') !== `${this.#innerDiameter}`;
     const hasNewLayer = !hasExistingStyles || this.#styles?.getAttribute('data-layer') !== `${this.#layer}`;
     const hasNewParameter = hasNewWeave || hasNewGauge || hasNewInnerDiameter || hasNewLayer;
-    console.log(this.#layer, this.#weave);
+    
     if(hasNewParameter) {
       const parser = new DOMParser();
       const newStyles = parser.parseFromString(`
         <style class="chainmail-sheet-styles" data-weave="${this.#weave}" data-awg="${this.#awg}" data-inner-diameter="${this.#innerDiameter}" data-layer="${this.#layer}">
           chainmail-sheet[layer="${this.#layer}"] {
             position: absolute;
-            z-index: -${this.#layer};
+            z-index: ${1000 - this.#layer}; /*in any case, avoid negatives or else hover breaks*/
           }
           
           chainmail-sheet[layer="${this.#layer}"] > .row {
@@ -86,29 +86,24 @@ class SheetComponent extends HTMLElement {
   }
   
   #onChangeAwg(newValue) {
-    this.#awg = parseInt(newValue);
     this.#renderStyles();
     this.#setAllRingAttributes(RingComponent.attributeNames.awg, this.#awg);
   }
   
   #onChangeInnerDiameter(newValue) {
-    this.#innerDiameter = parseInt(newValue);
     this.#renderStyles();
     this.#setAllRingAttributes(RingComponent.attributeNames.innerDiameter, this.#innerDiameter);
   }
   
   #onChangeWeave(newValue) {
-    this.#weave = newValue;
     this.#renderStyles();
   }
   
   #onChangeLayer(newValue) {
-    this.#layer = parseInt(newValue);
     this.#renderStyles();
   }
   
   #onChangeColor(newValue) {
-    this.#color = newValue;
     this.#renderTemplate();
   }
   

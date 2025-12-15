@@ -7,7 +7,6 @@
         <script src="models/layer.js"></script>
         
         <script src="logic/gauge-logic.js"></script>
-        <script src="logic/ring-logic.js"></script>
         <script src="logic/european-four-in-one-logic.js"></script>
         <script src="logic/european-six-in-one-logic.js"></script>
         <script src="logic/weave-logic.js"></script>
@@ -15,7 +14,14 @@
         
         <script src="components/ring-component.js"></script>
         <script src="components/sheet-component.js"></script>
+        
+        <script src="components/forms/base-component.js"></script>
+        <script src="components/forms/layer-form-component.js"></script>
+        <script src="components/forms/sheet-form-component.js"></script>
+        <script src="components/forms/ring-form-component.js"></script>
+        <script src="components/forms/view-form-component.js"></script>
         <script src="components/form-component.js"></script>
+        
         <style>
           body {
             display: flex;
@@ -30,7 +36,10 @@
 
           body > chainmail-form {
             border-left: 1px solid #cccccc;
+            box-sizing: border-box;
+            height: 100%;
             order: 2;
+            overflow: auto;
             padding: 10px;
             width: 20%;
           }
@@ -62,23 +71,24 @@
     <body class="dark-mode">
       <main style="zoom: 2;">
         <chainmail-sheet
+          class="chainmail-sheet--active"
           color="sandybrown"
-          rows="20"
-          columns="6"
+          rows="15"
+          columns="10"
           awg="18"
           inner-diameter="4"
           weave="European Four-In-One"
           layer="1"
         ></chainmail-sheet>
-        <chainmail-sheet
-        color="#cccccc"
+        <!--chainmail-sheet
+          color="#cccccc"
           rows="50"
           columns="6"
           awg="18"
           inner-diameter="4"
           weave="European Six-In-One"
           layer="2"
-        ></chainmail-sheet>
+        ></chainmail-sheet-->
       </main>
       <chainmail-form></chainmail-form>
     </body>

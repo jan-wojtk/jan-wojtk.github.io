@@ -5,47 +5,43 @@ class RingComponent extends HTMLElement {
   
   // Attributes
   static attributeNames = {
-    color: 'color',
     awg: 'awg',
+    color: 'color',
     innerDiameter: 'inner-diameter',
     outlineColor: 'outline-color',
     rotate180: 'rotate-180'
   };
   static observedAttributes = Object.values(RingComponent.attributeNames);
   
-  #color = 'sandybrown';
-  #innerDiameter;// = 4;
-  #awg;// = 18;
-  #outlineColor = '#666666';// light mode: '#888888';
-  #rotate180;// = false;
+  get #awg() { return parseInt(this.getAttribute(RingComponent.attributeNames.awg)) } ;// = 18;
+  get #color() { return this.getAttribute(RingComponent.attributeNames.color) || 'sandybrown' }
+  get #innerDiameter() { return parseInt(this.getAttribute(RingComponent.attributeNames.innerDiameter)) } // = 4;
+  get #outlineColor() { return this.getAttribute(RingComponent.attributeNames.outlineColor) || '#666666' }// light mode: '#888888';
+  get #rotate180() { return this.getAttribute(RingComponent.attributeNames.rotate180) === 'true' }// = false;
   
   // Attribute Callbacks
   attributeChangedCallback(name, oldValue, newValue) {
-    if(RingComponent.attributeNames.color === name) this.#onChangeColor(newValue);
     if(RingComponent.attributeNames.awg === name) this.#onChangeAwg(newValue);
+    if(RingComponent.attributeNames.color === name) this.#onChangeColor(newValue);
     if(RingComponent.attributeNames.innerDiameter === name) this.#onChangeInnerDiameter(newValue);
     if(RingComponent.attributeNames.outlineColor === name) this.#outlineColor = newValue;
     if(RingComponent.attributeNames.rotate180 === name) this.#onChangeRotate180(newValue);
   }
   
   // Attribute Setters
-  #onChangeRotate180(newValue) {
-    this.#rotate180 = newValue === "true"; // casting string to boolean
-  }
+  #onChangeRotate180(newValue) { }
   
   #onChangeAwg(newValue) {
-    this.#awg = parseInt(newValue);
     this.#renderStyles();
   }
   
   #onChangeInnerDiameter(newValue) {
-    this.#innerDiameter = parseInt(newValue);
     this.#renderStyles();
   }
   
   #onChangeColor(newValue) {
-    this.#color = newValue;
     this.#renderTemplate();
+    this.#renderStyles();
   }
   
   // Members
@@ -133,7 +129,7 @@ class RingComponent extends HTMLElement {
       
       template += `
         <div class="ring-slice">
-          <div class="ring" style="border-color: ${this.#color ? this.#color : 'inherit'}; top: -${100*i}%; z-index: ${zIndex};">
+          <div class="ring" style="top: -${100*i}%; z-index: ${zIndex};">
             <div class="ring__inner-outline">
             </div>
           </div>
@@ -149,8 +145,8 @@ class RingComponent extends HTMLElement {
     this.#renderStyles();
     this.#renderTemplate();
     
-    // Register event listeners
     this.addEventListener('click', this.handleClick);
+    // Register event listeners
   }
   
   // Event Listeners
