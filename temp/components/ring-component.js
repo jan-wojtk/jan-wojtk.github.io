@@ -9,7 +9,8 @@ class RingComponent extends HTMLElement {
     color: 'color',
     innerDiameter: 'inner-diameter',
     outlineColor: 'outline-color',
-    rotate180: 'rotate-180'
+    rotate180: 'rotate-180',
+    layer: 'layer'
   };
   static observedAttributes = Object.values(RingComponent.attributeNames);
   
@@ -18,6 +19,7 @@ class RingComponent extends HTMLElement {
   get #innerDiameter() { return parseInt(this.getAttribute(RingComponent.attributeNames.innerDiameter)) } // = 4;
   get #outlineColor() { return this.getAttribute(RingComponent.attributeNames.outlineColor) || '#666666' }// light mode: '#888888';
   get #rotate180() { return this.getAttribute(RingComponent.attributeNames.rotate180) === 'true' }// = false;
+  get #layer() { return parseInt(this.getAttribute(RingComponent.attributeNames.layer)); }
   
   // Attribute Callbacks
   attributeChangedCallback(name, oldValue, newValue) {
@@ -52,23 +54,24 @@ class RingComponent extends HTMLElement {
   }
   
   get #styles() {
-    return document.getElementById('chainmail-ring-styles');
+    return document.querySelector(`.chainmail-ring-styles[layer="${this.#layer}"]`);
   }
   
   #renderStyles() {
     // newValue should be a Node of the tag Styles
     const hasExistingStyles = !!this.#styles;
+    const hasNewLayer = !hasExistingStyles || this.#styles.getAttribute('data-layer') !== `${this.#layer}`;
     const hasNewGauge = !hasExistingStyles || this.#styles.getAttribute('data-awg') !== `${this.#awg}`;
     const hasNewInnerDiameter = !hasExistingStyles || this.#styles.getAttribute('data-inner-diameter') !== `${this.#innerDiameter}`;
-    const hasNewParameter = hasNewGauge || hasNewInnerDiameter;
+    const hasNewParameter = hasNewLayer || hasNewGauge || hasNewInnerDiameter;
     
     if(hasNewParameter) {
       const parser = new DOMParser();
       
       const outlineWidth = '.75';
       const newStyles = parser.parseFromString(`
-        <style id="chainmail-ring-styles" data-inner-diameter="${this.#innerDiameter}" data-awg="${this.#awg}">          
-          chainmail-ring {
+        <style class="chainmail-ring-styles" data-inner-diameter="${this.#innerDiameter}" data-awg="${this.#awg}" data-layer="${this.#layer}">          
+          chainmail-ring[layer="${this.#layer}"] {
             border-color: ${this.#color};
             border-radius: 50%;
             cursor: pointer;
@@ -77,14 +80,14 @@ class RingComponent extends HTMLElement {
             width: ${this.#ring.innerDiameter + (this.#ring.gauge.millimeters * 2)}mm;
           }
 
-          chainmail-ring > .ring-slice {
+          chainmail-ring[layer="${this.#layer}"] > .ring-slice {
             border-color: inherit;
             overflow: hidden;
             height: ${100/this.#sliceCount}%;
             width: 100%;
           }
 
-          chainmail-ring > .ring-slice > .ring {
+          chainmail-ring[layer="${this.#layer}"] > .ring-slice > .ring {
             border: ${this.#ring.gauge.mm} solid;
             border-color: inherit;
             border-radius: 50%;
@@ -95,14 +98,14 @@ class RingComponent extends HTMLElement {
             width: ${this.#innerDiameter}mm;
           }
           
-          chainmail-ring > .ring-slice > .ring > .ring__inner-outline {
+          chainmail-ring[layer="${this.#layer}"] > .ring-slice > .ring > .ring__inner-outline {
             outline: ${outlineWidth}px solid ${this.#outlineColor};
             border-radius: 50%;
             height: 100%;
             width: 100%;
           }
           
-          chainmail-ring:hover {
+          chainmail-ring[layer="${this.#layer}"]:hover {
             border-color: lightcoral !important;
           }
         </style>

@@ -8,9 +8,8 @@ class BaseComponent extends HTMLElement {
   // attributes that trigger template rerenders
   // attributes that should be used for render cacheing
   connectedCallback() {
-    this.#renderStyles();
-    this.#renderTemplate();
-    this.#registerEventListeners();
+    this.renderStyles();
+    this.renderTemplate();
   }
   
   get template() {
@@ -32,14 +31,14 @@ class BaseComponent extends HTMLElement {
     return `${this.constructor.tag}-styles`;
   }
   
-  #renderStyles() {
+  renderStyles() {
     const parser = new DOMParser();
     const existingStyles = document.getElementById(this.#stylesId);
     const newStyles = parser.parseFromString(
       `<style id="${this.#stylesId}">
         ${this.styles}
       </style>`
-    , 'text/html').head;
+    , 'text/html').head.children[0];
     
     if(existingStyles) {
       existingStyles.replaceChild(newStyles);
@@ -48,14 +47,15 @@ class BaseComponent extends HTMLElement {
     }
   }
   
-  #renderTemplate() {
+  renderTemplate() {
     const parser = new DOMParser();
     const newTemplateList = parser.parseFromString(this.template, 'text/html').body.children;
     
     this.replaceChildren(...newTemplateList);
+    this.registerEventListeners();
   }
   
-  #registerEventListeners() {
+  registerEventListeners() {
     this.eventListeners.forEach(ev => {
       if(ev.element)
         ev.element.addEventListener(ev.event, ev.handler);

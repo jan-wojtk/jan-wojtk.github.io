@@ -1,5 +1,17 @@
 class RingFormComponent extends BaseComponent {
   static tag = 'chainmail-ring-form';
+  static attributeNames = { activeLayer: 'active-layer' };
+  static observedAttributes = Object.values(RingFormComponent.attributeNames);
+  
+  get #activeLayer() { return parseInt(this.getAttribute(RingFormComponent.attributeNames.activeLayer)) }
+  
+  attributeChangedCallback(name, oldValue, newValue) {
+    if(RingFormComponent.attributeNames.activeLayer === name) this.#onChangeLayer(newValue);
+  }
+  
+  #onChangeLayer(newValue) {
+    console.log('ring form changed layer', this.#activeLayer);
+  }
   
   get template() {
     const gauges = GaugeLogic.GetGauges();
@@ -69,24 +81,12 @@ class RingFormComponent extends BaseComponent {
     }];
   }
   
-  get #weaveSelect() {
-    return document.getElementById('chainmail-form__weave');
-  }
-    
-  #setWeave(event) {
-    const newValue = event.target.value;
-    const sheet = this.#getActiveSheet();
-    sheet.setAttribute(SheetComponent.attributeNames.awg, 18);
-    sheet.setAttribute(SheetComponent.attributeNames.innerDiameter, 4);
-    sheet.setAttribute(SheetComponent.attributeNames.weave, newValue);
-  }
-  
   #getWeave() {
     return this.#getActiveSheet().getAttribute(SheetComponent.attributeNames.weave);
   }
 
   #getActiveSheet() {
-    return document.querySelector(`chainmail-sheet.chainmail-sheet--active`);
+    return document.querySelector(`chainmail-sheet:nth-child(${this.#activeLayer})`);
   }
   
   get #innerDiameterSelect() {

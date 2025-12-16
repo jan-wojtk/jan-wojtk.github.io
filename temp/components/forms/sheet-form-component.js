@@ -1,5 +1,17 @@
 class SheetFormComponent extends BaseComponent {
   static tag = 'chainmail-sheet-form';
+  static attributeNames = { activeLayer: 'active-layer' };
+  static observedAttributes = Object.values(SheetFormComponent.attributeNames);
+  
+  get #activeLayer() { return parseInt(this.getAttribute(SheetFormComponent.attributeNames.activeLayer)) }
+  
+  attributeChangedCallback(name, oldValue, newValue) {
+    if(SheetFormComponent.attributeNames.activeLayer === name) this.#onChangeLayer(newValue);
+  }
+  
+  #onChangeLayer(newValue) {
+    console.log('sheet form changed layer', this.#activeLayer);
+  }
   
   get template() {
     const layerList = LayerLogic.GetLayerList();
@@ -80,7 +92,7 @@ class SheetFormComponent extends BaseComponent {
   }
 
   #getActiveSheet() {
-    return document.querySelector(`chainmail-sheet.chainmail-sheet--active`);
+    return document.querySelector(`chainmail-sheet:nth-child(${this.#activeLayer})`);
   } 
 }
 customElements.define(SheetFormComponent.tag, SheetFormComponent);

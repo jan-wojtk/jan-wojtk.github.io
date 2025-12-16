@@ -12,15 +12,16 @@
         <script src="logic/weave-logic.js"></script>
         <script src="logic/layer-logic.js"></script>
         
+        <script src="components/base-component.js"></script>
+        
         <script src="components/ring-component.js"></script>
         <script src="components/sheet-component.js"></script>
         
-        <script src="components/forms/base-component.js"></script>
         <script src="components/forms/layer-form-component.js"></script>
         <script src="components/forms/sheet-form-component.js"></script>
         <script src="components/forms/ring-form-component.js"></script>
         <script src="components/forms/view-form-component.js"></script>
-        <script src="components/form-component.js"></script>
+        <script src="components/forms/form-component.js"></script>
         
         <style>
           body {
@@ -71,7 +72,6 @@
     <body class="dark-mode">
       <main style="zoom: 2;">
         <chainmail-sheet
-          class="chainmail-sheet--active"
           color="sandybrown"
           rows="15"
           columns="10"
@@ -80,15 +80,6 @@
           weave="European Four-In-One"
           layer="1"
         ></chainmail-sheet>
-        <!--chainmail-sheet
-          color="#cccccc"
-          rows="50"
-          columns="6"
-          awg="18"
-          inner-diameter="4"
-          weave="European Six-In-One"
-          layer="2"
-        ></chainmail-sheet-->
       </main>
       <chainmail-form></chainmail-form>
     </body>

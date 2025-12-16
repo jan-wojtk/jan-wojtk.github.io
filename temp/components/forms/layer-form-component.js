@@ -1,11 +1,10 @@
 class LayerFormComponent extends BaseComponent {
   static tag = 'chainmail-layer-form';
+  static attributeNames = { activeLayer: 'active-layer' };
+  static observedAttributes = Object.values(LayerFormComponent.attributeNames);
   
-  #activeLayer = 1;
-  
-  #getActiveSheet() {
-    return document.querySelector(`chainmail-sheet.chainmail-sheet--active`);
-  }
+  get #layerList() { return this.querySelectorAll('tr.layer-table__layer'); }
+  get #activeLayer() { return parseInt(this.getAttribute(LayerFormComponent.attributeNames.activeLayer)) }
   
   get template() {
     const layerList = LayerLogic.GetLayerList();
@@ -16,8 +15,8 @@ class LayerFormComponent extends BaseComponent {
         <table>
           <tbody>
             ${
-              layerList.map(l => `
-                <tr class="layer-table__layer">
+              layerList.map((l, index) => `
+                <tr class="layer-table__layer ${this.#activeLayer === (index + 1) ? 'layer-table__layer--active' : ''}" data-layer="${index + 1}">
                   <td class="layer-table__visibility">${l.hidden ? 'hidden' : '&#x1F441'}</td>
                   <td class="layer-table__name">${l.name}</td>
                   <td class="layer-table__remove">&#10006;</td>
@@ -33,17 +32,6 @@ class LayerFormComponent extends BaseComponent {
     `;
   }
   
-  get eventListeners() {
-    return [{
-      element: document.getElementById('layer-table__add-new'),
-      event: 'click',
-      handler: console.log
-    }, {
-      elements: document.querySelectorAll('.layer-table__layer'),
-      event: 'click',
-      handler: console.log
-    }];
-  }
   
   get styles() {
     return `
@@ -55,12 +43,15 @@ class LayerFormComponent extends BaseComponent {
       }
       
       chainmail-layer-form > fieldset > table tr.layer-table__layer {
-        background: #444444;
         cursor: pointer;
       }
       
-      chainmail-layer-form > fieldset #layer-table__add-new:hover {
+      chainmail-layer-form > fieldset > table tr.layer-table__layer.layer-table__layer--active {
         background: #444444;
+      }
+      
+      chainmail-layer-form > fieldset tbody tr:hover {
+        background: #3a3a3a;
         cursor: pointer;
       }
       
@@ -94,6 +85,51 @@ class LayerFormComponent extends BaseComponent {
         border-right: 0px;
       }
     `;
+  }
+  
+  get eventListeners() {
+    return [{
+      element: document.getElementById('layer-table__add-new'),
+      event: 'click',
+      handler: this.#onClickAddNew.bind(this)
+    }, {
+      elements: document.querySelectorAll('.layer-table__layer'),
+      event: 'click',
+      handler: this.#onClickLayer.bind(this)
+    }];
+  }
+  
+  #onClickAddNew(event) {
+    const parser = new DOMParser();
+    document.querySelector('main').appendChild(
+       parser.parseFromString(`
+        <chainmail-sheet
+          color="sandybrown"
+          rows="15"
+          columns="10"
+          awg="18"
+          inner-diameter="4"
+          weave="European Four-In-One"
+          layer="${LayerLogic.GetLayerList().length + 1}"
+        ></chainmail-sheet>
+      `, 'text/html').body.children[0]
+    );
+    
+    LayerLogic.AddNewLayer();
+    this.#setActiveLayer(LayerLogic.GetLayerList().length);
+    this.renderTemplate();
+  }
+  
+  #onClickLayer(event) {
+    const newActiveLayer = parseInt(event.target.closest('tr').getAttribute('data-layer'));
+    this.#setActiveLayer(newActiveLayer);
+    this.renderTemplate();
+  }
+  
+  #setActiveLayer(newActiveLayer) {
+    if(parseInt(newActiveLayer) !== this.#activeLayer) {
+      this.setAttribute(LayerFormComponent.attributeNames.activeLayer, newActiveLayer);
+    }
   }
 }
 customElements.define(LayerFormComponent.tag, LayerFormComponent);

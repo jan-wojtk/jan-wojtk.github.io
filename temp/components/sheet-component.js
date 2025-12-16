@@ -4,7 +4,15 @@ class SheetComponent extends HTMLElement {
   }
   
   // Attributes
-  static attributeNames = { rows: 'rows', columns: 'columns', innerDiameter: "inner-diameter", awg: 'awg', weave: 'weave', layer: 'layer', color: 'color' };
+  static attributeNames = {
+    rows: 'rows',
+    columns: 'columns',
+    innerDiameter: "inner-diameter",
+    awg: 'awg',
+    weave: 'weave',
+    layer: 'layer',
+    color: 'color'
+  };
   static observedAttributes = Object.values(SheetComponent.attributeNames);
   
   get #color() { return this.getAttribute(SheetComponent.attributeNames.color) }
@@ -120,6 +128,7 @@ class SheetComponent extends HTMLElement {
               awg="${this.#awg}"
               inner-diameter="${this.#innerDiameter}"
               rotate-180="${rowIndex%2==1}"
+              layer="${this.#layer}"
             ></chainmail-ring>
           `).join('')}
         </div>
