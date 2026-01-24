@@ -28,3 +28,23 @@ gauge
 innerDiameter
   4, 15.1181
   6, 22.6772px
+
+---
+  
+MVP todos:
+  - complete support for deleting layers
+  - complete support for toggling layer visibility
+  - complete support for columns & rows
+  - change zoom input to a range input, for ux
+  - smooth out the lag of zooming
+  - improve ring performance
+  - re-introduce ring color selection
+  - complete support for six-in-ones across gauges and diameters
+
+Future todos:
+  - stats: total ring count of sheet
+  - stats: total wire length of sheet
+  - stats: height and width of sheet
+  - reorganize forms using collapsible sections
+  - reorganize forms to indicate View isn't associated with the sheet
+  - save-to-session behavior
