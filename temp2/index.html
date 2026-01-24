@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      class Note {
+        constructor(name, octave) {
+          this.name = name; // C, C#, Db
+          this.octave = octave; // 0, 0, 0
+          this.isSharp = this.name.includes('#'); // false, true, false
+          this.isFlat = this.name.includes('b'); // false, false, true
+          this.midiNumber = this._getMidiNumber(); // 0, 1, 1
+          this.hertz = this._getHertz(); // 16.35160, 17.32391, 17.32391
+          
+          console.log(this.name, this.octave, this.isSharp, this.isFlat, this.midiNumber, this.hertz);
+        }
+        
+        Play() {
+          
+        }
+        
+        _getMidiNumber() {
+          const octaves = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+          const sharpScale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+          const flatScale = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];          
+          
+          const octaveValue = octaves.indexOf(this.octave) * 12;
+          const noteValue = this.isSharp ? sharpScale.indexOf(this.name) : flatScale.indexOf(this.name);
+          
+          return octaveValue + noteValue;
+        }
+        
+        _getHertz() {
+          return 440 * Math.pow(2, (this.midiNumber - 69) / 12);
+        }
+      }
+      
+      class Chord {
+        constructor() {
+          this.notes = [
+            new Note('C', 3),
+            new Note('E', 3),
+            new Note('G', 3)
+          ];
+        }
+        
+        get NoteCount() { return this.notes.length; }
+        
+        Play(duration = 1000) {
+          const oscillators = [];
+          const audioContext = new AudioContext();
+          const merger = audioContext.createChannelMerger(this.notes.length);
+          merger.connect(audioContext.destination);
+          
+          for(var i = 0; i < this.notes.length; i++) {
+            const note = this.notes[i];
+            
+            const oscillator = audioContext.createOscillator();
+            oscillator.type = 'sine'; // todo: review sine, square, sawtooth, triange
+            oscillator.frequency.setValueAtTime(note.hertz, audioContext.currentTime);
+            
+            const gainNode = audioContext.createGain();
+            gainNode.gain.value = 1/this.notes.length;
+            
+            oscillator.connect(gainNode);
+            oscillator.connect(merger, 0, i);
+            oscillator.start();
+            
+            oscillators.push(oscillator);
+          }
+          
+          setTimeout(() => {
+            for(var i = 0; i < oscillators.length; i++) {
+              oscillators[i].stop();
+            }
+          }, duration);
+        }
+        
+        _playNote() {
+        
+        }
+        
+        _stopNote(oscillator, gain) {
+          
+        }
+      }
+      
+      var x = new Chord();
+      //x.Play();
+    </script>
+  </head>
+  <body>
+    <div id="content">
+  </body>
+</html>
