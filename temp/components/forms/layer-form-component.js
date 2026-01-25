@@ -18,7 +18,7 @@ class LayerFormComponent extends BaseComponent {
             ${
               layerList.map((l, index) => `
                 <tr class="layer-table__layer ${this.#activeLayer === l.id ? 'layer-table__layer--active' : ''}" data-layer="${l.id}">
-                  <td class="layer-table__visibility"><button>${l.hidden ? 'hidden' : '&#x1F441'}</button></td>
+                  <td class="layer-table__visibility"><button title="show/hide">${l.hidden ? 'hidden' : '&#x1F441'}</button></td>
                   <td class="layer-table__name"><button>${l.name}</button></td>
                   <td class="layer-table__remove"><button ${isSingleLayer ? 'disabled' : ''}>&#10006;</button></td>
                 </tr>
@@ -149,7 +149,15 @@ class LayerFormComponent extends BaseComponent {
   }
   
   #onClickLayerVisibility() {
+    const layerId = this.#getEventLayer(event);
+    const sheet = this.#getLayerSheet(layerId);
+    const isHidden = sheet.getAttribute('hidden') === '';
     
+    if(isHidden) {
+      sheet.removeAttribute('hidden');
+    } else {
+      sheet.setAttribute('hidden', '');
+    }
   }
   
   #onClickLayerName(event) {
