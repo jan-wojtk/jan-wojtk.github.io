@@ -32,15 +32,15 @@ innerDiameter
 ---
   
 MVP todos:
-  - complete support for deleting layers
-  - complete support for toggling layer visibility
-  - complete support for columns & rows
+  - X complete support for deleting layers
   - X change zoom input to a range input, for ux
   - X smooth out the lag of zooming
-  - improve ring performance
+  - complete support for toggling layer visibility
+  - complete support for columns & rows
   - re-introduce ring color selection
-  - complete support for six-in-ones across gauges and diameters
   - keyboard navigability
+  - improve ring performance
+  - complete support for six-in-ones across gauges and diameters
 
 Future todos:
   - stats: total ring count of sheet
