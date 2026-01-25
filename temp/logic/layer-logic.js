@@ -20,7 +20,7 @@ class LayerLogic {
       throw "No layers to remove";
     }
     
-    const layerIndex = LayerLogic.#layerList.findIndex(l => l.name === layerToRemove.name);
+    const layerIndex = LayerLogic.#layerList.findIndex(l => l.id === layerToRemove);
     LayerLogic.#layerList.splice(layerIndex, 1);
   }
 }

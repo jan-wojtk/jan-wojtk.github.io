@@ -8,6 +8,7 @@ class LayerFormComponent extends BaseComponent {
   
   get template() {
     const layerList = LayerLogic.GetLayerList();
+    const isSingleLayer = layerList.length === 1;
     
     return `
       <fieldset>
@@ -16,10 +17,10 @@ class LayerFormComponent extends BaseComponent {
           <tbody>
             ${
               layerList.map((l, index) => `
-                <tr class="layer-table__layer ${this.#activeLayer === (index + 1) ? 'layer-table__layer--active' : ''}" data-layer="${l.id}">
+                <tr class="layer-table__layer ${this.#activeLayer === l.id ? 'layer-table__layer--active' : ''}" data-layer="${l.id}">
                   <td class="layer-table__visibility"><button>${l.hidden ? 'hidden' : '&#x1F441'}</button></td>
                   <td class="layer-table__name"><button>${l.name}</button></td>
-                  <td class="layer-table__remove"><button>&#10006;</button></td>
+                  <td class="layer-table__remove"><button ${isSingleLayer ? 'disabled' : ''}>&#10006;</button></td>
                 </tr>
               `).join('')
             }
@@ -86,16 +87,20 @@ class LayerFormComponent extends BaseComponent {
         background: transparent;
         border: 0;
         color: inherit;
-        cursor: pointer;
         height: 100%;
         width: 100%;
       }
       
-      chainmail-layer-form > fieldset > table td button:hover {
-        background: rgba(0, 0, 0, .1);
+      chainmail-layer-form > fieldset > table td button:disabled {
+        cursor: not-allowed;
       }
       
-      .dark-mode chainmail-layer-form > fieldset > table td button:hover {
+      chainmail-layer-form > fieldset > table td button:not(:disabled):hover {
+        background: rgba(0, 0, 0, .1);
+        cursor: pointer;
+      }
+      
+      .dark-mode chainmail-layer-form > fieldset > table td button:not(:disabled):hover {
         background: rgba(255, 255, 255, .1);
       }
     `;
@@ -139,7 +144,7 @@ class LayerFormComponent extends BaseComponent {
       `, 'text/html').body.children[0]
     );
     
-    this.#setActiveLayer(newLayer.name);
+    this.#setActiveLayer(newLayer.id);
     this.renderTemplate();
   }
   
@@ -155,8 +160,9 @@ class LayerFormComponent extends BaseComponent {
   
   #onClickLayerRemove(event) {
     const layerId = this.#getEventLayer(event);
+    this.#getLayerSheet(layerId).remove();
     LayerLogic.RemoveLayer(layerId);
-    this.#setActiveLayer(1);
+    this.#resetActiveLayer();
     this.renderTemplate();
   }
   
@@ -165,9 +171,18 @@ class LayerFormComponent extends BaseComponent {
   }
   
   #setActiveLayer(newActiveLayer) {
-    if(parseInt(newActiveLayer) !== this.#activeLayer) {
+    if(newActiveLayer !== this.#activeLayer) {
       this.setAttribute(LayerFormComponent.attributeNames.activeLayer, newActiveLayer);
     }
   }
+  
+  #resetActiveLayer() {
+    const newResetLayer = LayerLogic.GetLayerList()[0].id;
+    this.setAttribute(LayerFormComponent.attributeNames.activeLayer, newResetLayer);
+  }
+  
+  #getLayerSheet(layerId) {
+    return document.querySelector(`chainmail-sheet[layer="${layerId}"]`);
+  } 
 }
 customElements.define(LayerFormComponent.tag, LayerFormComponent);
