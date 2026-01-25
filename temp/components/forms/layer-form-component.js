@@ -1,24 +1,28 @@
 class LayerFormComponent extends BaseComponent {
   static tag = 'chainmail-layer-form';
-  static attributeNames = { activeLayer: 'active-layer' };
+  static attributeNames = { activeLayer: 'active-layer', collapsed: 'collapsed' };
   static observedAttributes = Object.values(LayerFormComponent.attributeNames);
   
   get #layerList() { return this.querySelectorAll('tr.layer-table__layer'); }
   get #activeLayer() { return parseInt(this.getAttribute(LayerFormComponent.attributeNames.activeLayer)) }
+  get #collapsed() { return this.getAttribute(LayerFormComponent.attributeNames.collapsed) === 'true' }
   
   get template() {
     const layerList = LayerLogic.GetLayerList();
     const isSingleLayer = layerList.length === 1;
+    const collapseIcon = this.#collapsed ? '&#x25B6;' : '&#x25BC;';
     
     return `
-      <fieldset>
-        <legend>Layer</legend>
+      <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
+        <legend>
+          <button class="chainmail-form__collapse" style="margin-left: -6px;"><span style="display: inline-block; font-size: .75em; text-align: left; vertical-align: ${this.#collapsed ? 'top' : 'middle'}; width: 15px;">${collapseIcon}</span> Layer</button>
+        </legend>
         <table>
           <tbody>
             ${
               layerList.map((l, index) => `
                 <tr class="layer-table__layer ${this.#activeLayer === l.id ? 'layer-table__layer--active' : ''}" data-layer="${l.id}">
-                  <td class="layer-table__visibility"><button title="show/hide">${l.hidden ? 'hidden' : '&#x1F441'}</button></td>
+                  <td class="layer-table__visibility"><button title="show/hide">${l.hidden ? '&#x1F441' : '&#x1F441'}</button></td>
                   <td class="layer-table__name"><button>${l.name}</button></td>
                   <td class="layer-table__remove"><button ${isSingleLayer ? 'disabled' : ''}>&#10006;</button></td>
                 </tr>
@@ -44,6 +48,7 @@ class LayerFormComponent extends BaseComponent {
         border-collapse: collapse;
         color: #eeeeee;
         font-size: 14px;
+        margin-top: .5em;
         width: 100%;
       }
       
@@ -95,13 +100,27 @@ class LayerFormComponent extends BaseComponent {
         cursor: not-allowed;
       }
       
-      chainmail-layer-form > fieldset > table td button:not(:disabled):hover {
+      chainmail-layer-form > fieldset button:not(:disabled):hover {
         background: rgba(0, 0, 0, .1);
         cursor: pointer;
       }
       
-      .dark-mode chainmail-layer-form > fieldset > table td button:not(:disabled):hover {
+      .dark-mode chainmail-layer-form > fieldset button:not(:disabled):hover {
         background: rgba(255, 255, 255, .1);
+      }
+      
+      /* Collapse styles */
+      .chainmail-form__collapse {
+        background: inherit;
+        border: 0;
+        color: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        text-decoration: inherit;
+      }
+      
+      fieldset.collapsed > *:not(legend) {
+        display: none;
       }
     `;
   }
@@ -123,6 +142,10 @@ class LayerFormComponent extends BaseComponent {
       elements: document.querySelectorAll('.layer-table__remove > button'),
       event: 'click',
       handler: this.#onClickLayerRemove.bind(this)
+    }, {
+      element: this.querySelector('.chainmail-form__collapse'),
+      event: 'click',
+      handler: this.#onClickCollapse.bind(this)
     }];
   }
   
@@ -160,6 +183,7 @@ class LayerFormComponent extends BaseComponent {
     }
   }
   
+  
   #onClickLayerName(event) {
     const newActiveLayer = this.#getEventLayer(event);
     this.#setActiveLayer(newActiveLayer);
@@ -171,6 +195,21 @@ class LayerFormComponent extends BaseComponent {
     this.#getLayerSheet(layerId).remove();
     LayerLogic.RemoveLayer(layerId);
     this.#resetActiveLayer();
+    this.renderTemplate();
+  }
+  
+  #onClickCollapse(event) {
+    const className = 'collapsed';
+    const fieldset = event.target.closest('fieldset');
+    const isFieldsetCollapsed = fieldset.classList.contains(className);
+    
+    if(isFieldsetCollapsed) {
+      fieldset.classList.remove(className);
+    } else {
+      fieldset.classList.add(className);
+    }
+    
+    this.setAttribute('collapsed', !this.#collapsed);
     this.renderTemplate();
   }
   
@@ -191,6 +230,6 @@ class LayerFormComponent extends BaseComponent {
   
   #getLayerSheet(layerId) {
     return document.querySelector(`chainmail-sheet[layer="${layerId}"]`);
-  } 
+  }
 }
 customElements.define(LayerFormComponent.tag, LayerFormComponent);

@@ -19,6 +19,10 @@ class ViewFormComponent extends BaseComponent {
       .dark-mode #chainmail-form__zoom-datalist {
         color: white;
       }
+      
+      #chainmail-form__dark-mode {
+        margin-left: 0;
+      }
     `;
   }
   

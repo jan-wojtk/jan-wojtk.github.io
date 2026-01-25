@@ -19,7 +19,7 @@ class FormComponent extends BaseComponent {
       chainmail-form fieldset > legend {
         font-size: 18px;
         font-weight: bold;
-        margin-bottom: .5em;
+        padding: 0;
       }
       
       chainmail-form fieldset > label {
