@@ -1,6 +1,7 @@
 class Layer {
-  constructor(name) {
-    this.name = name;
+  constructor(id) {
+    this.id = id;
+    this.name = `Layer ${this.id}`;
     this.hidden = false;
   }
 }

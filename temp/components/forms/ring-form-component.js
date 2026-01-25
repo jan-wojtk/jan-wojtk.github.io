@@ -3,7 +3,7 @@ class RingFormComponent extends BaseComponent {
   static attributeNames = { activeLayer: 'active-layer' };
   static observedAttributes = Object.values(RingFormComponent.attributeNames);
   
-  get #activeLayer() { return parseInt(this.getAttribute(RingFormComponent.attributeNames.activeLayer)) }
+  get #activeLayer() { return this.getAttribute(RingFormComponent.attributeNames.activeLayer) }
   
   attributeChangedCallback(name, oldValue, newValue) {
     if(RingFormComponent.attributeNames.activeLayer === name) this.#onChangeLayer(newValue);
@@ -86,8 +86,8 @@ class RingFormComponent extends BaseComponent {
   }
 
   #getActiveSheet() {
-    return document.querySelector(`chainmail-sheet:nth-child(${this.#activeLayer})`);
-  }
+    return document.querySelector(`chainmail-sheet[layer="${this.#activeLayer}"]`);
+  } 
   
   get #innerDiameterSelect() {
     return document.getElementById('chainmail-form__inner-diameter');

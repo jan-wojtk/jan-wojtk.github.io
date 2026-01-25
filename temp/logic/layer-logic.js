@@ -1,6 +1,8 @@
 class LayerLogic {
+  static #layerCount = 0;
+  
   static #layerList = [
-    new Layer('Layer 1')
+    new Layer(++this.#layerCount)
   ];
   
   static GetLayerList() {
@@ -8,7 +10,9 @@ class LayerLogic {
   }
   
   static AddNewLayer() {
-    LayerLogic.#layerList.push(new Layer(`Layer ${LayerLogic.GetLayerList().length + 1}`));
+    const newLayer = new Layer(++this.#layerCount);
+    LayerLogic.#layerList.push(newLayer);
+    return newLayer;
   }
   
   static RemoveLayer(layerToRemove) {

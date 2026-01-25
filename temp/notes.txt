@@ -40,6 +40,7 @@ MVP todos:
   - improve ring performance
   - re-introduce ring color selection
   - complete support for six-in-ones across gauges and diameters
+  - keyboard navigability
 
 Future todos:
   - stats: total ring count of sheet
@@ -48,3 +49,5 @@ Future todos:
   - reorganize forms using collapsible sections
   - reorganize forms to indicate View isn't associated with the sheet
   - save-to-session behavior
+  - sort layers
+  - make mobile happy

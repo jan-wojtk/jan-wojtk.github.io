@@ -16,15 +16,19 @@ class LayerFormComponent extends BaseComponent {
           <tbody>
             ${
               layerList.map((l, index) => `
-                <tr class="layer-table__layer ${this.#activeLayer === (index + 1) ? 'layer-table__layer--active' : ''}" data-layer="${index + 1}">
-                  <td class="layer-table__visibility">${l.hidden ? 'hidden' : '&#x1F441'}</td>
-                  <td class="layer-table__name">${l.name}</td>
-                  <td class="layer-table__remove">&#10006;</td>
+                <tr class="layer-table__layer ${this.#activeLayer === (index + 1) ? 'layer-table__layer--active' : ''}" data-layer="${l.id}">
+                  <td class="layer-table__visibility"><button>${l.hidden ? 'hidden' : '&#x1F441'}</button></td>
+                  <td class="layer-table__name"><button>${l.name}</button></td>
+                  <td class="layer-table__remove"><button>&#10006;</button></td>
                 </tr>
               `).join('')
             }
             <tr>
-              <td id="layer-table__add-new" colspan="3" style="border-right: 0px; border-top: 1px solid #eeeeee; padding: 10px; text-align: center;">&plus; Add New Layer</td>
+              <td id="layer-table__add-new" colspan="3">
+                <button style="border-right: 0px; border-top: 1px solid #eeeeee; padding: 10px; text-align: center;">
+                  &plus; Add New Layer
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -42,22 +46,15 @@ class LayerFormComponent extends BaseComponent {
         width: 100%;
       }
       
-      chainmail-layer-form > fieldset > table tr.layer-table__layer {
-        cursor: pointer;
-      }
-      
       chainmail-layer-form > fieldset > table tr.layer-table__layer.layer-table__layer--active {
         background: #444444;
-      }
-      
-      chainmail-layer-form > fieldset tbody tr:hover {
-        background: #3a3a3a;
-        cursor: pointer;
       }
       
       chainmail-layer-form > fieldset > table td,
       chainmail-layer-form > fieldset > table th {
         border-right: 1px solid #cccccc;
+        height: 1.5em;
+        padding: 0;
         text-align: left;
       }
       
@@ -71,9 +68,9 @@ class LayerFormComponent extends BaseComponent {
         border-left: 0px solid #cccccc;
         font-size: 22px;
         max-width: 14px;
-        padding-bottom: 4px; /* todo: figure out how to align vertically */
         text-align: center;
       }
+      
       
       chainmail-layer-form > fieldset > table tbody td:last-child  {
         border-top: 0px solid #cccccc;
@@ -84,6 +81,23 @@ class LayerFormComponent extends BaseComponent {
       chainmail-layer-form > fieldset > table th:last-child {
         border-right: 0px;
       }
+      
+      chainmail-layer-form > fieldset > table td button {
+        background: transparent;
+        border: 0;
+        color: inherit;
+        cursor: pointer;
+        height: 100%;
+        width: 100%;
+      }
+      
+      chainmail-layer-form > fieldset > table td button:hover {
+        background: rgba(0, 0, 0, .1);
+      }
+      
+      .dark-mode chainmail-layer-form > fieldset > table td button:hover {
+        background: rgba(255, 255, 255, .1);
+      }
     `;
   }
   
@@ -93,14 +107,24 @@ class LayerFormComponent extends BaseComponent {
       event: 'click',
       handler: this.#onClickAddNew.bind(this)
     }, {
-      elements: document.querySelectorAll('.layer-table__layer'),
+      elements: document.querySelectorAll('.layer-table__visibility > button'),
       event: 'click',
-      handler: this.#onClickLayer.bind(this)
+      handler: this.#onClickLayerVisibility.bind(this)
+    }, {
+      elements: document.querySelectorAll('.layer-table__name > button'),
+      event: 'click',
+      handler: this.#onClickLayerName.bind(this)
+    }, {
+      elements: document.querySelectorAll('.layer-table__remove > button'),
+      event: 'click',
+      handler: this.#onClickLayerRemove.bind(this)
     }];
   }
   
   #onClickAddNew(event) {
     const parser = new DOMParser();
+    const newLayer = LayerLogic.AddNewLayer();
+    
     document.querySelector('main').appendChild(
        parser.parseFromString(`
         <chainmail-sheet
@@ -110,20 +134,34 @@ class LayerFormComponent extends BaseComponent {
           awg="18"
           inner-diameter="4"
           weave="European Four-In-One"
-          layer="${LayerLogic.GetLayerList().length + 1}"
+          layer="${newLayer.id}"
         ></chainmail-sheet>
       `, 'text/html').body.children[0]
     );
     
-    LayerLogic.AddNewLayer();
-    this.#setActiveLayer(LayerLogic.GetLayerList().length);
+    this.#setActiveLayer(newLayer.name);
     this.renderTemplate();
   }
   
-  #onClickLayer(event) {
-    const newActiveLayer = parseInt(event.target.closest('tr').getAttribute('data-layer'));
+  #onClickLayerVisibility() {
+    
+  }
+  
+  #onClickLayerName(event) {
+    const newActiveLayer = this.#getEventLayer(event);
     this.#setActiveLayer(newActiveLayer);
     this.renderTemplate();
+  }
+  
+  #onClickLayerRemove(event) {
+    const layerId = this.#getEventLayer(event);
+    LayerLogic.RemoveLayer(layerId);
+    this.#setActiveLayer(1);
+    this.renderTemplate();
+  }
+  
+  #getEventLayer(event) {
+    return parseInt(event.target.closest('tr').getAttribute('data-layer'));
   }
   
   #setActiveLayer(newActiveLayer) {
