@@ -41,6 +41,7 @@ MVP todos:
   - complete support for columns & rows
   - improve ring performance
   - complete support for six-in-ones across gauges and diameters
+  - resync forms when the active sheet changes
 
 Future todos:
   - X reorganize forms using collapsible sections
