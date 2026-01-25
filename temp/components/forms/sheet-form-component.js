@@ -17,16 +17,17 @@ class SheetFormComponent extends BaseComponent {
     return `
       chainmail-sheet-form .color-list {
         display: flex;
-        margin: 0;
-        margin-top: .5em;
-        padding: 0;
+        flex-wrap: wrap;
         list-style-type: none;
+        margin: 0;
+        padding: 0;
       }
       
       chainmail-sheet-form .color-list > li {
         border: 1px solid #cccccc;
         border-radius: 3px;
         height: 20px;
+        margin-top: 5px;
         margin-right: 5px;
         width: 20px;
       }
@@ -69,7 +70,10 @@ class SheetFormComponent extends BaseComponent {
         <label for="chainmail-sheet-form__color">Color</label>
         <input id="chainmail-sheet-form__color" type="color" />
         <ol class="color-list">
-          ${['red', 'blue', 'green'].map(x => `<li><button style="background-color: ${x};"></button></li>`).join('')}
+          ${
+            ['#ffff19', '#daa520', '#f4a460', '#ffd700', '#f5f5f5', '#f1a886', '#000000', '#ff0000', '#00ff00', '#0000ff']
+              .map(x => `<li><button data-color="${x}" style="background-color: ${x};"></button></li>`).join('')
+          }
         </ol>
       </fieldset>
     `;
@@ -116,7 +120,7 @@ class SheetFormComponent extends BaseComponent {
   }
   
   get #colorListItems() {
-    return document.querySelectorAll('chainmail-sheet-form .color-list li');
+    return document.querySelectorAll('chainmail-sheet-form .color-list li button');
   }
      
   #setWeave(event) {
@@ -142,8 +146,9 @@ class SheetFormComponent extends BaseComponent {
   }
   
   #setColorByList(event) {
-    this.#getActiveSheet().setAttribute('color', event.target.style.backgroundColor);
-    // todo: set color input
+    const newColor = event.target.getAttribute('data-color');
+    this.#getActiveSheet().setAttribute('color', newColor);
+    this.#colorInput.value = newColor;
   }
   
   #getWeave() {
