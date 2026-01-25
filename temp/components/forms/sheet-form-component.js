@@ -13,6 +13,34 @@ class SheetFormComponent extends BaseComponent {
     console.log('sheet form changed layer', this.#activeLayer);
   }
   
+  get styles() {
+    return `
+      chainmail-sheet-form .color-list {
+        display: flex;
+        margin: 0;
+        margin-top: .5em;
+        padding: 0;
+        list-style-type: none;
+      }
+      
+      chainmail-sheet-form .color-list > li {
+        border: 1px solid #cccccc;
+        border-radius: 3px;
+        height: 20px;
+        margin-right: 5px;
+        width: 20px;
+      }
+      
+      chainmail-sheet-form .color-list > li > button {
+        border: 0;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+    `;
+  }
+  
   get template() {
     const layerList = LayerLogic.GetLayerList();
     const weaves = WeaveLogic.GetWeaves();
@@ -37,6 +65,12 @@ class SheetFormComponent extends BaseComponent {
         
         <label for="chainmail-form__rows">Rows</label>
         <input id="chainmail-form__rows" type="number" min="2" step="1" value="6" />
+        
+        <label for="chainmail-sheet-form__color">Color</label>
+        <input id="chainmail-sheet-form__color" type="color" />
+        <ol class="color-list">
+          ${['red', 'blue', 'green'].map(x => `<li><button style="background-color: ${x};"></button></li>`).join('')}
+        </ol>
       </fieldset>
     `;
   }
@@ -54,6 +88,14 @@ class SheetFormComponent extends BaseComponent {
       element: this.#columnsInput,
       event: 'change',
       handler: this.#setColumns.bind(this)
+    }, {
+      element: this.#colorInput,
+      event: 'change',
+      handler: this.#setColorByInput.bind(this)
+    }, {
+      elements: this.#colorListItems,
+      event: 'click',
+      handler: this.#setColorByList.bind(this)
     }];
   }
   
@@ -67,6 +109,14 @@ class SheetFormComponent extends BaseComponent {
   
   get #columnsInput() {
     return document.getElementById('chainmail-form__columns');
+  }
+  
+  get #colorInput() {
+    return document.getElementById('chainmail-sheet-form__color');
+  }
+  
+  get #colorListItems() {
+    return document.querySelectorAll('chainmail-sheet-form .color-list li');
   }
      
   #setWeave(event) {
@@ -85,6 +135,15 @@ class SheetFormComponent extends BaseComponent {
   #setColumns(event) {
     const newValue = event.target.value;
     this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.columns, newValue);
+  }
+  
+  #setColorByInput(event) {
+    this.#getActiveSheet().setAttribute('color', event.target.value);
+  }
+  
+  #setColorByList(event) {
+    this.#getActiveSheet().setAttribute('color', event.target.style.backgroundColor);
+    // todo: set color input
   }
   
   #getWeave() {

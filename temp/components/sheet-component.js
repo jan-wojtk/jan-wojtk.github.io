@@ -50,22 +50,25 @@ class SheetComponent extends HTMLElement {
   
   #renderStyles() {
     const hasExistingStyles = !!this.#styles;
+    const hasNewColor = !hasExistingStyles || this.#styles.getAttribute('data-color') !== `${this.#color}`;
     const hasNewWeave = !hasExistingStyles || this.#styles.getAttribute('data-weave') !== `${this.#weave}`;
     const hasNewGauge = !hasExistingStyles || this.#styles.getAttribute('data-awg') !== `${this.#awg}`;
     const hasNewInnerDiameter = !hasExistingStyles || this.#styles?.getAttribute('data-inner-diameter') !== `${this.#innerDiameter}`;
     const hasNewLayer = !hasExistingStyles || this.#styles?.getAttribute('data-layer') !== `${this.#layer}`;
-    const hasNewParameter = hasNewWeave || hasNewGauge || hasNewInnerDiameter || hasNewLayer;
+    const hasNewParameter = hasNewColor || hasNewWeave || hasNewGauge || hasNewInnerDiameter || hasNewLayer;
     
     if(hasNewParameter) {
       const parser = new DOMParser();
       const newStyles = parser.parseFromString(`
-        <style class="chainmail-sheet-styles" data-weave="${this.#weave}" data-awg="${this.#awg}" data-inner-diameter="${this.#innerDiameter}" data-layer="${this.#layer}">
+        <style class="chainmail-sheet-styles" data-color="${this.#color}" data-weave="${this.#weave}" data-awg="${this.#awg}" data-inner-diameter="${this.#innerDiameter}" data-layer="${this.#layer}">
           chainmail-sheet[layer="${this.#layer}"] {
+            border-color: ${this.#color};
             position: absolute;
             z-index: ${1000 - this.#layer}; /*in any case, avoid negatives or else hover breaks*/
           }
           
           chainmail-sheet[layer="${this.#layer}"] > .row {
+            border-color: inherit;
             display: flex;
             flex-direction:row;
           }
@@ -112,7 +115,7 @@ class SheetComponent extends HTMLElement {
   }
   
   #onChangeColor(newValue) {
-    this.#renderTemplate();
+    this.#renderStyles();
   }
   
   #renderTemplate() {
@@ -124,7 +127,6 @@ class SheetComponent extends HTMLElement {
         <div class="row">
           ${Array(this.#columns).fill(null).map((value, index) => `
             <chainmail-ring
-              color="${this.#color}"
               awg="${this.#awg}"
               inner-diameter="${this.#innerDiameter}"
               rotate-180="${rowIndex%2==1}"

@@ -15,7 +15,7 @@ class RingComponent extends HTMLElement {
   static observedAttributes = Object.values(RingComponent.attributeNames);
   
   get #awg() { return parseInt(this.getAttribute(RingComponent.attributeNames.awg)) } ;// = 18;
-  get #color() { return this.getAttribute(RingComponent.attributeNames.color) || 'sandybrown' }
+  get #color() { return this.getAttribute(RingComponent.attributeNames.color) || this.#getSheetAttribute(SheetComponent.attributeNames.color) }
   get #innerDiameter() { return parseInt(this.getAttribute(RingComponent.attributeNames.innerDiameter)) } // = 4;
   get #outlineColor() { return this.getAttribute(RingComponent.attributeNames.outlineColor) || '#666666' }// light mode: '#888888';
   get #rotate180() { return this.getAttribute(RingComponent.attributeNames.rotate180) === 'true' }// = false;
@@ -42,8 +42,7 @@ class RingComponent extends HTMLElement {
   }
   
   #onChangeColor(newValue) {
-    this.#renderTemplate();
-    this.#renderStyles();
+    this.style.borderColor = this.#color;
   }
   
   // Members
@@ -72,7 +71,7 @@ class RingComponent extends HTMLElement {
       const newStyles = parser.parseFromString(`
         <style class="chainmail-ring-styles" data-inner-diameter="${this.#innerDiameter}" data-awg="${this.#awg}" data-layer="${this.#layer}">          
           chainmail-ring[layer="${this.#layer}"] {
-            border-color: ${this.#color};
+            border-color: inherit;
             border-radius: 50%;
             cursor: pointer;
             height: ${this.#ring.innerDiameter + (this.#ring.gauge.millimeters * 2)}mm;
@@ -154,7 +153,12 @@ class RingComponent extends HTMLElement {
   
   // Event Listeners
   handleClick() {
+    this.setAttribute('color', '#cccccc');
     console.log(this, arguments);
+  }
+  
+  #getSheetAttribute(attribute) {
+    return this.closest('chainmail-sheet').getAttribute(attribute);
   }
 }
 customElements.define("chainmail-ring", RingComponent);
