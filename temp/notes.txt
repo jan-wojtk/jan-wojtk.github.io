@@ -35,8 +35,8 @@ MVP todos:
   - complete support for deleting layers
   - complete support for toggling layer visibility
   - complete support for columns & rows
-  - change zoom input to a range input, for ux
-  - smooth out the lag of zooming
+  - X change zoom input to a range input, for ux
+  - X smooth out the lag of zooming
   - improve ring performance
   - re-introduce ring color selection
   - complete support for six-in-ones across gauges and diameters
