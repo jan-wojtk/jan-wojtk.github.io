@@ -15,7 +15,7 @@ class LayerFormComponent extends BaseComponent {
     return `
       <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
         <legend>
-          <button class="chainmail-form__collapse" style="margin-left: -6px;"><span style="display: inline-block; font-size: .75em; text-align: left; vertical-align: ${this.#collapsed ? 'top' : 'middle'}; width: 15px;">${collapseIcon}</span> Layer</button>
+          <button class="chainmail-form__collapse"><span class="chainmail-form__collapse__icon" style="vertical-align: ${this.#collapsed ? 'top' : 'middle'};">${collapseIcon}</span> Layer</button>
         </legend>
         <table>
           <tbody>
@@ -94,33 +94,6 @@ class LayerFormComponent extends BaseComponent {
         color: inherit;
         height: 100%;
         width: 100%;
-      }
-      
-      chainmail-layer-form > fieldset > table td button:disabled {
-        cursor: not-allowed;
-      }
-      
-      chainmail-layer-form > fieldset button:not(:disabled):hover {
-        background: rgba(0, 0, 0, .1);
-        cursor: pointer;
-      }
-      
-      .dark-mode chainmail-layer-form > fieldset button:not(:disabled):hover {
-        background: rgba(255, 255, 255, .1);
-      }
-      
-      /* Collapse styles */
-      .chainmail-form__collapse {
-        background: inherit;
-        border: 0;
-        color: inherit;
-        font-size: inherit;
-        font-weight: inherit;
-        text-decoration: inherit;
-      }
-      
-      fieldset.collapsed > *:not(legend) {
-        display: none;
       }
     `;
   }

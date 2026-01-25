@@ -1,9 +1,10 @@
 class SheetFormComponent extends BaseComponent {
   static tag = 'chainmail-sheet-form';
-  static attributeNames = { activeLayer: 'active-layer' };
+  static attributeNames = { activeLayer: 'active-layer', collapsed: 'collapsed' };
   static observedAttributes = Object.values(SheetFormComponent.attributeNames);
   
   get #activeLayer() { return this.getAttribute(SheetFormComponent.attributeNames.activeLayer) }
+  get #collapsed() { return this.getAttribute(SheetFormComponent.attributeNames.collapsed) === 'true' }
   
   attributeChangedCallback(name, oldValue, newValue) {
     if(SheetFormComponent.attributeNames.activeLayer === name) this.#onChangeLayer(newValue);
@@ -45,10 +46,13 @@ class SheetFormComponent extends BaseComponent {
   get template() {
     const layerList = LayerLogic.GetLayerList();
     const weaves = WeaveLogic.GetWeaves();
+    const collapseIcon = this.#collapsed ? '&#x25B6;' : '&#x25BC;';
     
     return `
-      <fieldset>
-        <legend>Sheet</legend>
+      <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
+        <legend>
+          <button class="chainmail-form__collapse"><span class="chainmail-form__collapse__icon" style="vertical-align: ${this.#collapsed ? 'top' : 'middle'};">${collapseIcon}</span> Sheet</button>
+        </legend>
         <label for="chainmail-form__weave">Weave</label>
         <select id="chainmail-form__weave">
           ${
@@ -100,7 +104,26 @@ class SheetFormComponent extends BaseComponent {
       elements: this.#colorListItems,
       event: 'click',
       handler: this.#setColorByList.bind(this)
+    }, {
+      element: this.querySelector('.chainmail-form__collapse'),
+      event: 'click',
+      handler: this.#onClickCollapse.bind(this)
     }];
+  }
+  
+  #onClickCollapse(event) {
+    const className = 'collapsed';
+    const fieldset = event.target.closest('fieldset');
+    const isFieldsetCollapsed = fieldset.classList.contains(className);
+    
+    if(isFieldsetCollapsed) {
+      fieldset.classList.remove(className);
+    } else {
+      fieldset.classList.add(className);
+    }
+    
+    this.setAttribute('collapsed', !this.#collapsed);
+    this.renderTemplate();
   }
   
   get #weaveSelect() {

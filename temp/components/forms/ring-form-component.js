@@ -1,9 +1,10 @@
 class RingFormComponent extends BaseComponent {
   static tag = 'chainmail-ring-form';
-  static attributeNames = { activeLayer: 'active-layer' };
+  static attributeNames = { activeLayer: 'active-layer', collapsed: 'collapsed' };
   static observedAttributes = Object.values(RingFormComponent.attributeNames);
   
   get #activeLayer() { return this.getAttribute(RingFormComponent.attributeNames.activeLayer) }
+  get #collapsed() { return this.getAttribute(LayerFormComponent.attributeNames.collapsed) === 'true' }
   
   attributeChangedCallback(name, oldValue, newValue) {
     if(RingFormComponent.attributeNames.activeLayer === name) this.#onChangeLayer(newValue);
@@ -27,9 +28,13 @@ class RingFormComponent extends BaseComponent {
       : WeaveLogic.IsEuropeanSixInOne(currentWeaveName) ? EuropeanSixInOneLogic
       : null;
       
+    const collapseIcon = this.#collapsed ? '&#x25B6;' : '&#x25BC;';
+      
     return `
-      <fieldset>
-        <legend>Ring</legend>
+      <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
+        <legend>
+          <button class="chainmail-form__collapse"><span class="chainmail-form__collapse__icon" style="vertical-align: ${this.#collapsed ? 'top' : 'middle'};">${collapseIcon}</span> Ring</button>
+        </legend>
         <label for="chainmail-form__inner-diameter">Inner Diameter</label>
         <select id="chainmail-form__inner-diameter">
           ${
@@ -78,7 +83,26 @@ class RingFormComponent extends BaseComponent {
       element: this.#innerDiameterSelect,
       event: 'change',
       handler: this.#setInnerDiameter.bind(this)
+    }, {
+      element: this.querySelector('.chainmail-form__collapse'),
+      event: 'click',
+      handler: this.#onClickCollapse.bind(this)
     }];
+  }
+  
+  #onClickCollapse(event) {
+    const className = 'collapsed';
+    const fieldset = event.target.closest('fieldset');
+    const isFieldsetCollapsed = fieldset.classList.contains(className);
+    
+    if(isFieldsetCollapsed) {
+      fieldset.classList.remove(className);
+    } else {
+      fieldset.classList.add(className);
+    }
+    
+    this.setAttribute('collapsed', !this.#collapsed);
+    this.renderTemplate();
   }
   
   #getWeave() {

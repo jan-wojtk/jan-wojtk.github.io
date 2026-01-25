@@ -43,11 +43,12 @@ MVP todos:
   - complete support for six-in-ones across gauges and diameters
 
 Future todos:
+  - X reorganize forms using collapsible sections
+  - X reorganize forms to indicate View isn't associated with the sheet
+  - sort layers
   - stats: total ring count of sheet
   - stats: total wire length of sheet
   - stats: height and width of sheet
-  - reorganize forms using collapsible sections
-  - reorganize forms to indicate View isn't associated with the sheet
+  - stats: credit card length for reference
   - save-to-session behavior
-  - sort layers
   - make mobile happy

@@ -1,5 +1,9 @@
 class ViewFormComponent extends BaseComponent {
   static tag = 'chainmail-view-form';
+  static attributeNames = { collapsed: 'collapsed' };
+  static observedAttributes = Object.values(LayerFormComponent.attributeNames);
+  
+  get #collapsed() { return this.getAttribute(LayerFormComponent.attributeNames.collapsed) === 'true' }
   
   get styles() {
     return `
@@ -27,9 +31,13 @@ class ViewFormComponent extends BaseComponent {
   }
   
   get template() {
+    const collapseIcon = this.#collapsed ? '&#x25B6;' : '&#x25BC;';
+    
     return `
-      <fieldset>
-        <legend>View</legend>
+      <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
+        <legend>
+          <button class="chainmail-form__collapse"><span class="chainmail-form__collapse__icon" style="vertical-align: ${this.#collapsed ? 'top' : 'middle'};">${collapseIcon}</span> View</button>
+        </legend>
         
         <label for="chainmail-form__zoom">Zoom</label>
         <input
@@ -64,7 +72,26 @@ class ViewFormComponent extends BaseComponent {
       element: document.getElementById('chainmail-form__dark-mode'),
       event: 'change',
       handler: this.#setDarkMode.bind(this)
+    }, {
+      element: this.querySelector('.chainmail-form__collapse'),
+      event: 'click',
+      handler: this.#onClickCollapse.bind(this)
     }];
+  }
+  
+  #onClickCollapse(event) {
+    const className = 'collapsed';
+    const fieldset = event.target.closest('fieldset');
+    const isFieldsetCollapsed = fieldset.classList.contains(className);
+    
+    if(isFieldsetCollapsed) {
+      fieldset.classList.remove(className);
+    } else {
+      fieldset.classList.add(className);
+    }
+    
+    this.setAttribute('collapsed', !this.#collapsed);
+    this.renderTemplate();
   }
   
   #setZoom(event) {
