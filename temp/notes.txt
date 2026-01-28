@@ -36,9 +36,9 @@ MVP todos:
   - X change zoom input to a range input, for ux
   - X smooth out the lag of zooming
   - X complete support for toggling layer visibility
+  - X complete support for columns & rows
   - / re-introduce ring color selection
   - / keyboard navigability
-  - complete support for columns & rows
   - improve ring performance
   - complete support for six-in-ones across gauges and diameters
   - resync forms when the active sheet changes

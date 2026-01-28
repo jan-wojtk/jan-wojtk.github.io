@@ -25,8 +25,8 @@ class SheetComponent extends HTMLElement {
   
   attributeChangedCallback(name, oldValue, newValue) {
     if(SheetComponent.attributeNames.color === name) this.#onChangeColor(newValue);
-    //if(SheetComponent.attributeNames.rows === name) this.#rows = parseInt(newValue);
-    //if(SheetComponent.attributeNames.columns === name) this.#columns = parseInt(newValue);
+    if(SheetComponent.attributeNames.rows === name) this.#onChangeRows(newValue);
+    if(SheetComponent.attributeNames.columns === name) this.#onChangeColumns(newValue);
     if(SheetComponent.attributeNames.awg === name) this.#onChangeAwg(newValue);
     if(SheetComponent.attributeNames.innerDiameter === name) this.#onChangeInnerDiameter(newValue);
     if(SheetComponent.attributeNames.weave === name) this.#onChangeWeave(newValue);
@@ -118,26 +118,44 @@ class SheetComponent extends HTMLElement {
     this.#renderStyles();
   }
   
+  #onChangeRows() {
+    this.#renderTemplate();
+  }
+  
+  #onChangeColumns() {
+    this.#renderTemplate();
+  }
+  
   #renderTemplate() {
-    const parser = new DOMParser();
+    // Add rows as needed
+    while(this.#rows > (this.#rowList.length || 0)) {
+      const row = document.createElement('div');
+      row.setAttribute('class', 'row');
+      this.appendChild(row);
+    }
     
-    // Todo: replace Array.fill iteration for readability
-    const rowList = parser.parseFromString(
-      Array(this.#rows).fill(null).map((value, rowIndex) => `
-        <div class="row">
-          ${Array(this.#columns).fill(null).map((value, index) => `
-            <chainmail-ring
-              awg="${this.#awg}"
-              inner-diameter="${this.#innerDiameter}"
-              rotate-180="${rowIndex%2==1}"
-              layer="${this.#layer}"
-            ></chainmail-ring>
-          `).join('')}
-        </div>
-      `).join(''), 'text/html'
-    ).body.children;
+    // Remove rows as needed
+    while(this.#rows < (this.#rowList.length || 0)) {
+      this.lastElementChild.remove();
+    }
     
-    this.replaceChildren(...rowList);
+    // Review each row's contents
+    const baseRing = this.#getNewRing();
+    for(let i = 0; i < this.#rowList.length; i++) {
+      const row = this.#rowList[i];
+      const isOddRow = i % 2 == 0;
+      const expectedRingCount = isOddRow ? Math.ceil(this.#columns/2) : Math.floor(this.#columns/2);
+      
+      while(expectedRingCount > (row.children.length || 0)) {
+        const newRing = baseRing.cloneNode(true);
+        newRing.setAttribute('rotate-180', !isOddRow);
+        row.appendChild(newRing);
+      }
+      
+      while(expectedRingCount < (row.children.length || 0)) {
+        row.lastElementChild.remove();
+      }
+    }
   }
   
   connectedCallback() {
@@ -222,6 +240,19 @@ class SheetComponent extends HTMLElement {
         } },
       }
     }.innerDiameter[this.#innerDiameter].awg[this.#awg];
+  }
+  
+  #getNewRing() {
+    const parser = new DOMParser();
+    const ring = parser.parseFromString(`
+      <chainmail-ring
+        awg="${this.#awg}"
+        inner-diameter="${this.#innerDiameter}"
+        layer="${this.#layer}"
+      ></chainmail-ring>
+    `, 'text/html').body.children[0];
+    
+    return ring;
   }
 }
 customElements.define("chainmail-sheet", SheetComponent);

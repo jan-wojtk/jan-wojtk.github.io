@@ -137,9 +137,9 @@ class LayerFormComponent extends BaseComponent {
     document.querySelector('main').appendChild(
        parser.parseFromString(`
         <chainmail-sheet
-          color="sandybrown"
-          rows="15"
-          columns="10"
+          color="#cccccc"
+          rows="21"
+          columns="31"
           awg="18"
           inner-diameter="4"
           weave="European Four-In-One"
