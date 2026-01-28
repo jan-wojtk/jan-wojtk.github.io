@@ -22,7 +22,7 @@ class LayerFormComponent extends BaseComponent {
             ${
               layerList.map((l, index) => `
                 <tr class="layer-table__layer ${this.#activeLayer === l.id ? 'layer-table__layer--active' : ''}" data-layer="${l.id}">
-                  <td class="layer-table__visibility"><button title="show/hide">${l.hidden ? '&#x1F441' : '&#x1F441'}</button></td>
+                  <td class="layer-table__visibility ${l.hidden ? 'layer-table__visibility--hidden' : ''}"><button title="show/hide">&#x1F441;</button></td>
                   <td class="layer-table__name"><button>${l.name}</button></td>
                   <td class="layer-table__remove"><button ${isSingleLayer ? 'disabled' : ''}>&#10006;</button></td>
                 </tr>
@@ -77,6 +77,14 @@ class LayerFormComponent extends BaseComponent {
         text-align: center;
       }
       
+      chainmail-form table .layer-table__visibility.layer-table__visibility--hidden > button:after {
+        border-top: 1px solid #cccccc;
+        content: '';
+        display: block;
+        position: relative;
+        top: -25%;
+        transform: rotate(-45deg);
+      }
       
       chainmail-layer-form > fieldset > table tbody td:last-child  {
         border-top: 0px solid #cccccc;
@@ -144,18 +152,20 @@ class LayerFormComponent extends BaseComponent {
     this.renderTemplate();
   }
   
-  #onClickLayerVisibility() {
+  #onClickLayerVisibility(event) {
     const layerId = this.#getEventLayer(event);
-    const sheet = this.#getLayerSheet(layerId);
-    const isHidden = sheet.getAttribute('hidden') === '';
+    const layer = LayerLogic.GetLayerById(layerId);
     
-    if(isHidden) {
+    const sheet = this.#getLayerSheet(layerId);
+    if(layer.hidden) {
       sheet.removeAttribute('hidden');
     } else {
       sheet.setAttribute('hidden', '');
     }
+    
+    LayerLogic.SetLayerHidden(layerId, !layer.hidden);
+    this.renderTemplate();
   }
-  
   
   #onClickLayerName(event) {
     const newActiveLayer = this.#getEventLayer(event);
