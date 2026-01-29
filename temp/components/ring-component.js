@@ -148,12 +148,16 @@ class RingComponent extends HTMLElement {
     this.#renderTemplate();
     
     this.addEventListener('click', this.handleClick);
-    // Register event listeners
+    this.addEventListener('contextmenu', this.handleContextMenu)
   }
   
-  // Event Listeners
   handleClick() {
     this.setAttribute('color', RingLogic.colorOnClick);
+  }
+  
+  handleContextMenu() {
+    event.preventDefault();
+    this.removeAttribute('color', RingLogic.colorOnClick);
   }
   
   #getSheetAttribute(attribute) {
