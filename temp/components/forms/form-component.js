@@ -51,6 +51,32 @@ class FormComponent extends BaseComponent {
         width: 100%;
       }
       
+      /* Color inputs */
+       chainmail-form .color-list {
+        display: flex;
+        flex-wrap: wrap;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      
+      chainmail-form .color-list > li {
+        border: 1px solid #cccccc;
+        border-radius: 3px;
+        height: 20px;
+        margin-top: 5px;
+        margin-right: 5px;
+        width: 20px;
+      }
+      
+      chainmail-form .color-list > li > button {
+        border: 0;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      
       /* Collapse styles */
       .chainmail-form__collapse {
         background: inherit;

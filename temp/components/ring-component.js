@@ -153,8 +153,7 @@ class RingComponent extends HTMLElement {
   
   // Event Listeners
   handleClick() {
-    this.setAttribute('color', '#cccccc');
-    console.log(this, arguments);
+    this.setAttribute('color', RingLogic.colorOnClick);
   }
   
   #getSheetAttribute(attribute) {

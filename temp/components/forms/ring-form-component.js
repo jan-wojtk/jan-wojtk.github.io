@@ -70,6 +70,15 @@ class RingFormComponent extends BaseComponent {
             }).join('')
           }
         </select>
+        
+        <label for="chainmail-ring-form__color">Color</label>
+        <input id="chainmail-ring-form__color" type="color" value="${RingLogic.colorOnClick}"/>
+        <ol class="color-list">
+          ${
+            ['#ffff19', '#daa520', '#f4a460', '#ffd700', '#f5f5f5', '#f1a886', '#000000', '#ff0000', '#00ff00', '#0000ff']
+              .map(x => `<li><button data-color="${x}" style="background-color: ${x};"></button></li>`).join('')
+          }
+        </ol>
       </fieldset>
     `;
   }
@@ -87,7 +96,33 @@ class RingFormComponent extends BaseComponent {
       element: this.querySelector('.chainmail-form__collapse'),
       event: 'click',
       handler: this.#onClickCollapse.bind(this)
+    }, {
+      element: this.#colorInput,
+      event: 'change',
+      handler: this.#setColorByInput.bind(this)
+    }, {
+      elements: this.#colorListItems,
+      event: 'click',
+      handler: this.#setColorByList.bind(this)
     }];
+  }
+  
+  get #colorInput() {
+    return document.getElementById('chainmail-ring-form__color');
+  }
+  
+  get #colorListItems() {
+    return document.querySelectorAll('chainmail-ring-form .color-list li button');
+  }
+  
+  #setColorByInput(event) {
+    RingLogic.colorOnClick = event.target.value;
+  }
+  
+  #setColorByList(event) {
+    const newColor = event.target.getAttribute('data-color');
+    RingLogic.colorOnClick = newColor;
+    this.#colorInput.value = newColor;
   }
   
   #onClickCollapse(event) {

@@ -38,8 +38,7 @@ MVP todos:
   - X complete support for toggling layer visibility
   - X complete support for columns & rows
   - X resync forms when the active sheet changes
-  - / re-introduce ring color selection
-  - / keyboard navigability
+  - X re-introduce ring color selection
   - complete support for six-in-ones across gauges and diameters
   - improve ring performance
   - merge the gauge and inner diameter selects into 1, simplifying validation
@@ -47,6 +46,7 @@ MVP todos:
 Future todos:
   - X reorganize forms using collapsible sections
   - X reorganize forms to indicate View isn't associated with the sheet
+  - / keyboard navigability
   - sort layers
   - stats: total ring count of sheet
   - stats: total wire length of sheet
