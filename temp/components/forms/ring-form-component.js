@@ -11,7 +11,7 @@ class RingFormComponent extends BaseComponent {
   }
   
   #onChangeLayer(newValue) {
-    console.log('ring form changed layer', this.#activeLayer);
+    this.renderTemplate();
   }
   
   get template() {

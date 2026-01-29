@@ -11,7 +11,7 @@ class SheetFormComponent extends BaseComponent {
   }
   
   #onChangeLayer(newValue) {
-    console.log('sheet form changed layer', this.#activeLayer);
+    this.renderTemplate();
   }
   
   get styles() {
@@ -48,6 +48,12 @@ class SheetFormComponent extends BaseComponent {
     const weaves = WeaveLogic.GetWeaves();
     const collapseIcon = this.#collapsed ? '&#x25B6;' : '&#x25BC;';
     
+    const sheet = this.#getActiveSheet();
+    const sheetWeave = sheet.getAttribute(SheetComponent.attributeNames.weave);
+    const sheetColumns = sheet.getAttribute(SheetComponent.attributeNames.columns);
+    const sheetRows = sheet.getAttribute(SheetComponent.attributeNames.rows);
+    const sheetColor = sheet.getAttribute(SheetComponent.attributeNames.color);
+    
     return `
       <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
         <legend>
@@ -59,20 +65,20 @@ class SheetFormComponent extends BaseComponent {
             weaves.map(weave => `
               <option
                 value="${weave.name}"
-                ${weave.name === this.#getWeave() ? 'selected' : ''}
+                ${weave.name === sheetWeave ? 'selected' : ''}
               >${weave.name}</option>
             `).join('')
           }
         </select>
         
         <label for="chainmail-form__columns">Columns</label>
-        <input id="chainmail-form__columns" type="number" min="2" step="1" value="10" />
+        <input id="chainmail-form__columns" type="number" min="2" step="1" value="${sheetColumns}" />
         
         <label for="chainmail-form__rows">Rows</label>
-        <input id="chainmail-form__rows" type="number" min="2" step="1" value="6" />
+        <input id="chainmail-form__rows" type="number" min="2" step="1" value="${sheetRows}" />
         
         <label for="chainmail-sheet-form__color">Color</label>
-        <input id="chainmail-sheet-form__color" type="color" />
+        <input id="chainmail-sheet-form__color" type="color" value="${sheetColor}"/>
         <ol class="color-list">
           ${
             ['#ffff19', '#daa520', '#f4a460', '#ffd700', '#f5f5f5', '#f1a886', '#000000', '#ff0000', '#00ff00', '#0000ff']

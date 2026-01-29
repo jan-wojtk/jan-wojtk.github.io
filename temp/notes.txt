@@ -37,11 +37,12 @@ MVP todos:
   - X smooth out the lag of zooming
   - X complete support for toggling layer visibility
   - X complete support for columns & rows
+  - X resync forms when the active sheet changes
   - / re-introduce ring color selection
   - / keyboard navigability
   - complete support for six-in-ones across gauges and diameters
-  - resync forms when the active sheet changes
   - improve ring performance
+  - merge the gauge and inner diameter selects into 1, simplifying validation
 
 Future todos:
   - X reorganize forms using collapsible sections
@@ -53,3 +54,5 @@ Future todos:
   - stats: credit card length for reference
   - save-to-session behavior
   - make mobile happy
+  - add recent color history to color pickers
+  - dry up the color options
