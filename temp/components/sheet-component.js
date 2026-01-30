@@ -74,7 +74,7 @@ class SheetComponent extends HTMLElement {
           }
           
           chainmail-sheet[layer="${this.#layer}"] > .row ~ .row {
-            margin-top: ${this.#getRowMarginTop()};
+            margin-top: ${this.#getRowMarginTop()}px;
           }
           
           chainmail-sheet[layer="${this.#layer}"] > .row:nth-child(even) {
