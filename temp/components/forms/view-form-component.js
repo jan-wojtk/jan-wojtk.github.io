@@ -24,7 +24,7 @@ class ViewFormComponent extends BaseComponent {
         color: white;
       }
       
-      #chainmail-form__dark-mode {
+      #chainmail-form__dark-mode, #chainmail-form__stat-overlay {
         margin-left: 0;
       }
     `;
@@ -46,7 +46,7 @@ class ViewFormComponent extends BaseComponent {
           type="range"
           min="50"
           max="300"
-          step="25"
+          step="5"
           value="200"
         />
         <datalist id="chainmail-form__zoom-datalist">
@@ -58,7 +58,8 @@ class ViewFormComponent extends BaseComponent {
           <option value="300" label="300"></option>
         </datalist>
         
-        <label><input id="chainmail-form__dark-mode" type="checkbox" checked/>Dark Mode</label>
+        <label><input id="chainmail-form__dark-mode" type="checkbox" checked />Dark Mode</label>
+        <label><input id="chainmail-form__stat-overlay" type="checkbox" checked />Stat Overlay</label>
       </fieldset>
     `;
   }
@@ -76,6 +77,10 @@ class ViewFormComponent extends BaseComponent {
       element: this.querySelector('.chainmail-form__collapse'),
       event: 'click',
       handler: this.#onClickCollapse.bind(this)
+    }, {
+      element: document.getElementById('chainmail-form__stat-overlay'),
+      event: 'click',
+      handler: this.#setStatOverlay.bind(this)
     }];
   }
   
@@ -102,6 +107,12 @@ class ViewFormComponent extends BaseComponent {
   #setDarkMode(event) {
     if(event.target.checked) document.body.classList.add('dark-mode');
     if(!event.target.checked) document.body.classList.remove('dark-mode');
+  }
+  
+  #setStatOverlay(event) {
+    const statOverlay = document.getElementById('stat-overlay');
+    if(event.target.checked) statOverlay.removeAttribute('hidden');
+    if(!event.target.checked) statOverlay.setAttribute('hidden', '');
   }
   
   #getZoom() {
