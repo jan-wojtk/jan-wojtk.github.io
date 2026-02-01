@@ -2,6 +2,7 @@ class RingFormComponent extends BaseComponent {
   static tag = 'chainmail-ring-form';
   static attributeNames = { activeLayer: 'active-layer', collapsed: 'collapsed' };
   static observedAttributes = Object.values(RingFormComponent.attributeNames);
+  static #activeSheetObserver = null;
   
   get #activeLayer() { return this.getAttribute(RingFormComponent.attributeNames.activeLayer) }
   get #collapsed() { return this.getAttribute(LayerFormComponent.attributeNames.collapsed) === 'true' }
@@ -11,13 +12,21 @@ class RingFormComponent extends BaseComponent {
   }
   
   #onChangeLayer(newValue) {
+    if(RingFormComponent.#activeSheetObserver !== null) RingFormComponent.#activeSheetObserver.disconnect();
+    
+    RingFormComponent.#activeSheetObserver = new MutationObserver((mutationList) => {
+      const activeSheetWeaveChange = mutationList.find(m => m.attributeName === SheetComponent.attributeNames.weave);
+      
+      if(activeSheetWeaveChange) {
+        this.renderTemplate();
+      }
+    });
+    
+    RingFormComponent.#activeSheetObserver.observe(this.#getActiveSheet(), {attributes: true});
     this.renderTemplate();
   }
   
   get template() {
-    const gauges = GaugeLogic.GetGauges();
-    const innerDiameters = [4, 6, 7, 8];
-    
     const currentAwg = this.#getAwg();
     const currentInnerDiameter = this.#getInnerDiameter();
     
@@ -27,51 +36,34 @@ class RingFormComponent extends BaseComponent {
       WeaveLogic.IsEuropeanFourInOne(currentWeaveName) ? EuropeanFourInOneLogic
       : WeaveLogic.IsEuropeanSixInOne(currentWeaveName) ? EuropeanSixInOneLogic
       : null;
-      
+    
+    const validRingTypes = currentWeaveLogic.GetValidRingTypes();
+    const validRingTypesByInnerDiameter = Object.groupBy(validRingTypes, (x) => x.innerDiameter);
+    
     const collapseIcon = this.#collapsed ? '&#x25B6;' : '&#x25BC;';
-      
     return `
       <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
         <legend>
           <button class="chainmail-form__collapse"><span class="chainmail-form__collapse__icon" style="vertical-align: ${this.#collapsed ? 'top' : 'middle'};">${collapseIcon}</span> Ring</button>
         </legend>
-        <label for="chainmail-form__inner-diameter">Inner Diameter</label>
-        <select id="chainmail-form__inner-diameter">
-          ${
-            innerDiameters.map(innerDiameter => {
-              const isValidRingType = currentWeaveLogic.IsValidRingType(innerDiameter, this.#getAwg());
-              
-              return `
+        
+        <label for="chainmail-form__aspect-ratio">Inner Diameter / Gauge (mm)</label>
+        <select id="chainmail-form__aspect-ratio">
+          ${Object.keys(validRingTypesByInnerDiameter).map(innerDiameter => `
+            <optgroup label="${innerDiameter}mm">
+              ${validRingTypesByInnerDiameter[innerDiameter].map(ring => `                
                 <option
-                  value="${innerDiameter}"
-                  ${innerDiameter === this.#getInnerDiameter() ? 'selected' : ''}
-                  ${!isValidRingType ? ' disabled' : ''}
-                  ${!isValidRingType ? ` title="Can't complete a ${currentWeaveName} with AWG ${this.#getAwg()}g and Inner Diameter ${innerDiameter}"` : ''}
-                >${innerDiameter}mm</option>
-              `;
-            }).join('')
-          }
+                  data-awg="${ring.gauge.awg}"
+                  data-inner-diameter="${innerDiameter}"
+                  title="Aspect Ratio ${ring.aspectRatio}"
+                  ${ring.gauge.awg == currentAwg && innerDiameter == currentInnerDiameter ? 'selected' : ''}
+                >${innerDiameter}mm / ${ring.gauge.awgGauge} (${ring.gauge.mm})</option>
+              `).join('')}
+            </optgroup>
+          `).join('')}
         </select>
         
-        <label for="chainmail-form__gauge">Gauge (AWG)</label>
-        <select id="chainmail-form__gauge">
-          ${
-            gauges.map(gauge => {
-              const isValidRingType = currentWeaveLogic.IsValidRingType(this.#getInnerDiameter(), gauge.awg);
-              
-              return `
-                <option
-                  value="${gauge.awg}"
-                  ${gauge.awg === this.#getAwg() ? 'selected' : ''}
-                  ${!isValidRingType ? 'disabled' : ''}
-                  ${!isValidRingType ? ` title="Can't complete a ${currentWeaveName} with AWG ${gauge.awg}g and Inner Diameter ${this.#getInnerDiameter()}"` : ''}
-                >${gauge.awgGauge} (${gauge.mm})</option>
-              `
-            }).join('')
-          }
-        </select>
-        
-        <label for="chainmail-ring-form__color">Color</label>
+        <label for="chainmail-ring-form__color">Color (on click)</label>
         <input id="chainmail-ring-form__color" type="color" value="${RingLogic.colorOnClick}"/>
         <ol class="color-list">
           ${
@@ -84,14 +76,10 @@ class RingFormComponent extends BaseComponent {
   }
   
   get eventListeners() {
-    return [{      
-      element: this.#gaugeSelect,
+    return [{
+      element: this.#aspectRatioSelect,
       event: 'change',
-      handler: this.#setGauge.bind(this)
-    }, {      
-      element: this.#innerDiameterSelect,
-      event: 'change',
-      handler: this.#setInnerDiameter.bind(this)
+      handler: this.#setAspectRatio.bind(this)
     }, {
       element: this.querySelector('.chainmail-form__collapse'),
       event: 'click',
@@ -105,6 +93,18 @@ class RingFormComponent extends BaseComponent {
       event: 'click',
       handler: this.#setColorByList.bind(this)
     }];
+  }
+  
+  get #aspectRatioSelect() {
+    return document.getElementById('chainmail-form__aspect-ratio');
+  }
+  
+  #setAspectRatio(event) {
+    const awg = event.target.selectedOptions[0].getAttribute('data-awg');
+    const innerDiameter = event.target.selectedOptions[0].getAttribute('data-inner-diameter');
+    
+    this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.awg, awg);
+    this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.innerDiameter, innerDiameter);
   }
   
   get #colorInput() {
@@ -140,30 +140,12 @@ class RingFormComponent extends BaseComponent {
     this.renderTemplate();
   }
   
-  #getWeave() {
-    return this.#getActiveSheet().getAttribute(SheetComponent.attributeNames.weave);
-  }
-
   #getActiveSheet() {
     return document.querySelector(`chainmail-sheet[layer="${this.#activeLayer}"]`);
-  } 
-  
-  get #innerDiameterSelect() {
-    return document.getElementById('chainmail-form__inner-diameter');
   }
   
-  get #gaugeSelect() {
-    return document.getElementById('chainmail-form__gauge');
-  }
-  
-  #setGauge(event) {
-    const newValue = event.target.value;
-    this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.awg, newValue);
-  }
-  
-  #setInnerDiameter(event) {
-    const newValue = event.target.value;
-    this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.innerDiameter, newValue);
+  #getWeave() {
+    return this.#getActiveSheet().getAttribute(SheetComponent.attributeNames.weave);
   }
   
   #getInnerDiameter() {
@@ -172,6 +154,10 @@ class RingFormComponent extends BaseComponent {
   
   #getAwg() {
     return parseInt(this.#getActiveSheet().getAttribute(SheetComponent.attributeNames.awg));
+  }
+  
+  #onWeaveChange() {
+    
   }
 }
 customElements.define(RingFormComponent.tag, RingFormComponent);

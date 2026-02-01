@@ -10,6 +10,10 @@ class EuropeanFourInOneLogic {
     });
   }
   
+  static GetValidRingTypes() {
+    return EuropeanFourInOneLogic.#validRingTypes;
+  }
+  
   static #validRingTypes = [
     new Ring(4, 20),
     new Ring(4, 19),

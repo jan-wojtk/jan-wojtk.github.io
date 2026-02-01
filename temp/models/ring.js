@@ -4,6 +4,6 @@ class Ring {
     this.gauge = GaugeLogic.GetGaugeByAwg(awg);
     
     this.innerDiameterMm = innerDiameter + 'mm';
-    this.aspectRatio = this.innerDiameter / this.gauge.millimeters;
+    this.aspectRatio = (this.innerDiameter / this.gauge.millimeters).toFixed(2);
   }
 }
