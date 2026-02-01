@@ -39,9 +39,9 @@ MVP todos:
   - X complete support for columns & rows
   - X resync forms when the active sheet changes
   - X re-introduce ring color selection
+  - X merge the gauge and inner diameter selects into 1, simplifying validation
   - complete support for six-in-ones across gauges and diameters
   - improve ring performance
-  - merge the gauge and inner diameter selects into 1, simplifying validation
 
 Future todos:
   - X reorganize forms using collapsible sections
