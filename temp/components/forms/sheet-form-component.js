@@ -85,6 +85,8 @@ class SheetFormComponent extends BaseComponent {
               .map(x => `<li><button data-color="${x}" style="background-color: ${x};"></button></li>`).join('')
           }
         </ol>
+        
+        <br />
       </fieldset>
     `;
   }
