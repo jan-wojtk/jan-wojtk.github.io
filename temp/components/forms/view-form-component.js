@@ -7,6 +7,10 @@ class ViewFormComponent extends BaseComponent {
   
   get styles() {
     return `
+      #chainmail-form__zoom {
+          margin: 0;
+      }
+      
       #chainmail-form__zoom-datalist {
         display:flex;
         font-size: .9em;

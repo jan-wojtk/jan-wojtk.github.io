@@ -74,7 +74,7 @@ class SheetComponent extends HTMLElement {
           }
           
           chainmail-sheet[layer="${this.#layer}"] > .row ~ .row {
-            margin-top: ${this.#getRowMarginTop()}px;
+            margin-top: ${this.#getRowMarginTop()}mm;
           }
           
           chainmail-sheet[layer="${this.#layer}"] > .row:nth-child(even) {
@@ -167,79 +167,25 @@ class SheetComponent extends HTMLElement {
   }
   
   #getRowMarginTop() {
-    if(WeaveLogic.IsEuropeanFourInOne(this.#weave)) return this.#getRowMarginTopForEuropeanFourInOne();
-    if(WeaveLogic.IsEuropeanSixInOne(this.#weave)) return this.#getRowMarginTopForEuropeanSixInOne();
+    const gaugeMm = GaugeLogic.GetGaugeByAwg(this.#awg).millimeters;
+    const innerDiameter = this.#innerDiameter;
+    const totalDiameter = (2 * gaugeMm) + innerDiameter;
+    
+    if(WeaveLogic.IsEuropeanFourInOne(this.#weave)) return (totalDiameter * -1.57) + (innerDiameter * 1.509);
+    if(WeaveLogic.IsEuropeanSixInOne(this.#weave)) return this.#getRowMarginTopForEuropeanSixInOne(innerDiameter, totalDiameter);
   }
   
-  #getRowMarginTopForEuropeanFourInOne() {
-    // todo: rewrite this for readability using the Ring class
-    // todo: make real formulas for these trends
-    return {
-      innerDiameter: {
-        '4': { awg: {
-          '20': '-9.83386',
-          '19': '-11.33386',
-          '18': '-13.03386',
-          '17': '-13.53386',
-          '16': '-15.33386',
-          '15': '-17.33386',
-          '14': '-19.53386',
-        } },
-        '6': { awg: {
-          '20': '-10.83386',
-          '19': '-11.83386',
-          '18': '-12.83386',
-          '17': '-14.33386',
-          '16': '-15.83386',
-          '15': '-17.83386',
-          '14': '-19.83386',
-          '13': '-22.33386',
-          '12': '-25.13386',
-          '11': '-28.13386',
-        } },
-        '7': { awg: {
-          '20': '-11.33386',
-          '19': '-12.33386',
-          '18': '-13.3386',
-          '17': '-14.83386',
-          '16': '-16.33386',
-          '15': '-18.03386',
-          '14': '-20.33386',
-          '13': '-22.83386',
-          '12': '-24.83386',
-          '11': '-28.33386',
-          '10': '-32.33386',
-        } },
-        '8': { awg: {
-          '20': '-11.83386',
-          '19': '-13.33386',
-          '18': '-13.83386',
-          '17': '-15.33386',
-          '16': '-16.83386',
-          '15': '-18.83386',
-          '14': '-20.83386',
-          '13': '-22.83386',
-          '12': '-25.33386',
-          '11': '-28.83386',
-          '10': '-31.8386',
-          '9': '-36.33386'
-        } },
-      }
-    }.innerDiameter[this.#innerDiameter].awg[this.#awg];
-  }
-  
-  #getRowMarginTopForEuropeanSixInOne() {
-    // todo: rewrite this for readability using the Ring class
-    // todo: make real formulas for these trends
-    return {
-      innerDiameter: {
-        '4': { awg: {
-          '20': '-17.5386',
-          '19': '-18.35386',
-          '18': '-19.1386',
-        } },
-      }
-    }.innerDiameter[this.#innerDiameter].awg[this.#awg];
+  #getRowMarginTopForEuropeanSixInOne(innerDiameter, totalDiameter) {
+    // Choose accurate static values for 4mm, use a function for the others
+    if(innerDiameter == 4) {
+      return {
+        '20': '-4.652',
+        '19': '-4.868',
+        '18': '-5.064'
+      }[this.#awg];
+    }
+    
+    return (totalDiameter * -1.097) + (innerDiameter * .3837);
   }
   
   #getNewRing() {
