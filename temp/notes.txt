@@ -40,7 +40,7 @@ MVP todos:
   - X resync forms when the active sheet changes
   - X re-introduce ring color selection
   - X merge the gauge and inner diameter selects into 1, simplifying validation
-  - complete support for six-in-ones across gauges and diameters
+  - X complete support for six-in-ones across gauges and diameters
   - improve ring performance
 
 Future todos:
