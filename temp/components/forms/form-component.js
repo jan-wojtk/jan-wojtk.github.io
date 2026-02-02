@@ -47,6 +47,7 @@ class FormComponent extends BaseComponent {
       
       chainmail-form fieldset > label ~ input,
       chainmail-form fieldset > label ~ select {
+        box-sizing: border-box;
         height: 2em;
         width: 100%;
       }

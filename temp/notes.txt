@@ -1,9 +1,12 @@
 Todos:
-  - sort layers
+  - / make mobile happy
+  - set default zoom to 100 when on vertical mobile
+  - enforce reasonable maximums on rows & columns (prevent page freeze)
+  - consider moving rows and columns inputs adjacent to each other, for space
+  - sortable layers
   - stats: total ring count of sheet
   - stats: total wire length of sheet
   - stats: height and width of sheet
   - save-to-session behavior
-  - make mobile happy
   - add recent color history to color pickers
   - dry up the color options

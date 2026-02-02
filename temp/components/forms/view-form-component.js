@@ -43,6 +43,12 @@ class ViewFormComponent extends BaseComponent {
           <button class="chainmail-form__collapse"><span class="chainmail-form__collapse__icon" style="vertical-align: ${this.#collapsed ? 'top' : 'middle'};">${collapseIcon}</span> View</button>
         </legend>
         
+        <label><input id="chainmail-form__stat-overlay" type="checkbox" />Credit Card Overlay</label>
+        
+        <label><input id="chainmail-form__dark-mode" type="checkbox" checked />Dark Mode</label>
+        
+        <br />
+        
         <label for="chainmail-form__zoom">Zoom</label>
         <input
           id="chainmail-form__zoom"
@@ -61,9 +67,6 @@ class ViewFormComponent extends BaseComponent {
           <option value="250" label="250"></option>
           <option value="300" label="300"></option>
         </datalist>
-        
-        <label><input id="chainmail-form__dark-mode" type="checkbox" checked />Dark Mode</label>
-        <label><input id="chainmail-form__stat-overlay" type="checkbox" />Credit Card Overlay</label>
       </fieldset>
     `;
   }
