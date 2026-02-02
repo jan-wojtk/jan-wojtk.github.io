@@ -67,7 +67,7 @@ class RingFormComponent extends BaseComponent {
         <input id="chainmail-ring-form__color" type="color" value="${RingLogic.colorOnClick}"/>
         <ol class="color-list">
           ${
-            ['#ffff19', '#daa520', '#f4a460', '#ffd700', '#f5f5f5', '#f1a886', '#000000', '#ff0000', '#00ff00', '#0000ff']
+            ['#ffff19', '#daa520', '#f4a460', '#ffd700', '#f5f5f5', '#f1a886']
               .map(x => `<li><button data-color="${x}" style="background-color: ${x};"></button></li>`).join('')
           }
         </ol>

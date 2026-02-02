@@ -31,7 +31,7 @@ innerDiameter
 
 ---
   
-MVP todos:
+Todos:
   - X complete support for deleting layers
   - X change zoom input to a range input, for ux
   - X smooth out the lag of zooming
@@ -41,13 +41,11 @@ MVP todos:
   - X re-introduce ring color selection
   - X merge the gauge and inner diameter selects into 1, simplifying validation
   - X complete support for six-in-ones across gauges and diameters
-  - improve ring performance
-
-Future todos:
+  - X improve ring performance
   - X reorganize forms using collapsible sections
   - X reorganize forms to indicate View isn't associated with the sheet
   - X stats: credit card length for reference
-  - / keyboard navigability
+  - X keyboard navigability
   - sort layers
   - stats: total ring count of sheet
   - stats: total wire length of sheet
