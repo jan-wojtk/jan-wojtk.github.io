@@ -63,7 +63,7 @@ class ViewFormComponent extends BaseComponent {
         </datalist>
         
         <label><input id="chainmail-form__dark-mode" type="checkbox" checked />Dark Mode</label>
-        <label><input id="chainmail-form__stat-overlay" type="checkbox" checked />Stat Overlay</label>
+        <label><input id="chainmail-form__stat-overlay" type="checkbox" />Credit Card Overlay</label>
       </fieldset>
     `;
   }
