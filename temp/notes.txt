@@ -1,0 +1,9 @@
+Todos:
+  - sort layers
+  - stats: total ring count of sheet
+  - stats: total wire length of sheet
+  - stats: height and width of sheet
+  - save-to-session behavior
+  - make mobile happy
+  - add recent color history to color pickers
+  - dry up the color options

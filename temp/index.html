@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="models/ring.js"></script>
+        <script src="models/gauge.js"></script>
+        <script src="models/weave.js"></script>
+        <script src="models/layer.js"></script>
+        
+        <script src="logic/gauge-logic.js"></script>
+        <script src="logic/ring-logic.js"></script>
+        <script src="logic/european-four-in-one-logic.js"></script>
+        <script src="logic/european-six-in-one-logic.js"></script>
+        <script src="logic/weave-logic.js"></script>
+        <script src="logic/layer-logic.js"></script>
+        
+        <script src="components/base-component.js"></script>
+        
+        <script src="components/ring-component.js"></script>
+        <script src="components/sheet-component.js"></script>
+        
+        <script src="components/forms/layer-form-component.js"></script>
+        <script src="components/forms/sheet-form-component.js"></script>
+        <script src="components/forms/ring-form-component.js"></script>
+        <script src="components/forms/view-form-component.js"></script>
+        <script src="components/forms/form-component.js"></script>
+        
+        <style>
+          body {
+            display: flex;
+            flex-direction: row;
+            font-family: sans-serif;
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            width: 100%;
+          }
+
+          body > chainmail-form {
+            border-left: 1px solid #cccccc;
+            box-sizing: border-box;
+            height: 100%;
+            order: 2;
+            overflow: auto;
+            padding: 10px;
+            width: 20%;
+          }
+
+          body > main {
+            align-items: center;
+            display: flex;
+            flex-grow: 1;
+            height: 100%;
+            justify-content: center;
+            order: 1;
+            overflow: auto;
+          }
+          
+          body.dark-mode {
+            background: #333333;
+          }
+          
+          body.dark-mode label, body.dark-mode legend {
+            color: #eeeeee !important;
+          }
+          
+          body.dark-mode chainmail-ring, body.dark-mode chainmail-ring .ring-partial .ring {
+            outline-color: #666666;
+          }
+          
+          #stat-overlay {
+            bottom: 10px;
+            left: 10px;
+            color: #aaaaaa;
+            font-size: .8em;
+            position: fixed;
+          }
+          
+          .stat-overlay__credit-card {
+            border: 1px solid #aaaaaa;
+            border-top: 0;
+            box-sizing: border-box;
+            padding-left: 5px;
+            user-select: none;
+            width: 86.2mm;
+          }
+        </style>
+    </head>
+    <body class="dark-mode">
+      <main style="zoom: 2;">        
+        <div id="stat-overlay" class="stat-overlay" hidden>
+          <div class="stat-overlay__credit-card">
+            Standard credit card width
+          </div>
+        </div>
+        <chainmail-sheet
+          color="#f4a460"
+          rows="11"
+          columns="21"
+          awg="18"
+          inner-diameter="4"
+          weave="European Four-In-One"
+          layer="1"
+        ></chainmail-sheet>
+      </main>
+      <chainmail-form></chainmail-form>
+    </body>
+</html>
