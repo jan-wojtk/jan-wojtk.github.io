@@ -100,8 +100,10 @@ class RingComponent extends HTMLElement {
             width: 100%;
           }
           
-          chainmail-ring[layer="${this.#layer}"]:hover {
-            border-color: lightcoral !important;
+          @media (hover: hover) {
+            chainmail-ring[layer="${this.#layer}"]:hover {
+              border-color: lightcoral !important;
+            }
           }
         </style>
       `, 'text/html').head.children[0];
