@@ -1,8 +1,8 @@
 Todos:
-  - / make mobile happy
+  - X enforce reasonable maximums on rows & columns (prevent page freeze)
+  - X consider moving rows and columns inputs adjacent to each other, for space
+  - / make mobile happy (fix drag to draw if possible)
   - set default zoom to 100 when on vertical mobile
-  - enforce reasonable maximums on rows & columns (prevent page freeze)
-  - consider moving rows and columns inputs adjacent to each other, for space
   - sortable layers
   - stats: total ring count of sheet
   - stats: total wire length of sheet
@@ -10,3 +10,4 @@ Todos:
   - save-to-session behavior
   - add recent color history to color pickers
   - dry up the color options
+  - fix overflow clipping
