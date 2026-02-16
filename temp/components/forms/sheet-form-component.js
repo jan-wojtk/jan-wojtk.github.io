@@ -163,12 +163,34 @@ class SheetFormComponent extends BaseComponent {
   }
   
   #setRows(event) {
-    const newValue = event.target.value;
+    const eventValue = event.target.value;
+    let newValue;
+    
+    if(eventValue < 2) {
+      newValue = 2;
+    } else if (eventValue > 100) {
+      newValue = 100;
+    } else {
+      newValue = parseInt(eventValue);
+    }
+    
+    this.#rowsInput.value = newValue;
     this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.rows, newValue);
   }
   
   #setColumns(event) {
-    const newValue = event.target.value;
+    const eventValue = event.target.value;
+    let newValue;
+    
+    if(eventValue < 2) {
+      newValue = 2;
+    } else if (eventValue > 100) {
+      newValue = 100;
+    } else {
+      newValue = parseInt(eventValue);
+    }
+    
+    this.#columnsInput.value = newValue;
     this.#getActiveSheet().setAttribute(SheetComponent.attributeNames.columns, newValue);
   }
   
