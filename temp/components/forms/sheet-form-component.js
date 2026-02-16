@@ -40,6 +40,16 @@ class SheetFormComponent extends BaseComponent {
         padding: 0;
         width: 100%;
       }
+      
+      .chainmail-sheet-form__input-row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+      
+      .chainmail-sheet-form__input-row__input {
+        width: 47.5%;
+      }
     `;
   }
   
@@ -71,11 +81,18 @@ class SheetFormComponent extends BaseComponent {
           }
         </select>
         
-        <label for="chainmail-form__columns">Columns</label>
-        <input id="chainmail-form__columns" type="number" min="2" step="1" value="${sheetColumns}" />
+        <div class="chainmail-sheet-form__input-row">
+          <div class="chainmail-sheet-form__input-row__input">
+            <label for="chainmail-form__columns">Columns</label>
+            <input id="chainmail-form__columns" type="number" min="2" step="1" value="${sheetColumns}" />
+          </div>
+          
+          <div class="chainmail-sheet-form__input-row__input">
+            <label for="chainmail-form__rows">Rows</label>
+            <input id="chainmail-form__rows" type="number" min="2" step="1" value="${sheetRows}" />
+          </div>
+        </div>
         
-        <label for="chainmail-form__rows">Rows</label>
-        <input id="chainmail-form__rows" type="number" min="2" step="1" value="${sheetRows}" />
         
         <label for="chainmail-sheet-form__color">Color</label>
         <input id="chainmail-sheet-form__color" type="color" value="${sheetColor}"/>

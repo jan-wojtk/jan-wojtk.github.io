@@ -31,22 +31,22 @@ class FormComponent extends BaseComponent {
         padding: 0;
       }
       
-      chainmail-form fieldset > label {
+      chainmail-form fieldset label {
         display:block;
         font-size: 14px;
         font-weight: bold;
         margin-top: .5em;
       }
       
-      chainmail-form fieldset > label::after {
+      chainmail-form fieldset label::after {
         content: "\\A";
         display: block;
         font-size: 0;
         white-space: pre-wrap;
       }
       
-      chainmail-form fieldset > label ~ input,
-      chainmail-form fieldset > label ~ select {
+      chainmail-form fieldset label ~ input,
+      chainmail-form fieldset label ~ select {
         box-sizing: border-box;
         height: 2em;
         width: 100%;
