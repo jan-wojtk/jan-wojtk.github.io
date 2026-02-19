@@ -11,6 +11,4 @@ Todos:
   - add recent color history to color pickers
   - dry up the color options
   - fix overflow clipping
-  
-Also, btw:
-  - desktop allows right-click to remove the on-click color, but there isn't an analogous action on mobile. This difference in functionality could be effectively lessened by implementing color history, so removes can be done via repaint
+  - consider scrollable max-height for layer list

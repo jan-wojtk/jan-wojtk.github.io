@@ -164,8 +164,21 @@ class SheetComponent extends HTMLElement {
     
     // Register event listeners
     this.addEventListener('click', this.handleClick);
+    this.addEventListener('contextmenu', this.handleContextMenu);
     this.addEventListener('pointermove', this.handlePointerMove);
     this.addEventListener('touchmove', this.handleTouchMove);
+  }
+  
+  handleClick(event) {
+    event.preventDefault();
+    
+    this.#applyColorChange(event.clientX, event.clientY, true, false);
+  }
+  
+  handleContextMenu(event) {
+    event.preventDefault();
+    
+    this.#applyColorChange(event.clientX, event.clientY, false, true);
   }
   
   handlePointerMove(event) {
