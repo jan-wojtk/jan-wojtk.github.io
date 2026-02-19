@@ -164,6 +164,38 @@ class SheetComponent extends HTMLElement {
     
     // Register event listeners
     this.addEventListener('click', this.handleClick);
+    this.addEventListener('pointermove', this.handlePointerMove);
+    this.addEventListener('touchmove', this.handleTouchMove);
+  }
+  
+  handlePointerMove(event) {
+    event.preventDefault();
+    
+    // Gather info based on pointerType
+    const isAdd = event.buttons === 1 || event.pointerType === 'touch';
+    const isRemove = event.buttons === 2;
+    
+    this.#applyColorChange(event.clientX, event.clientY, isAdd, isRemove);
+  }
+  
+  handleTouchMove(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    
+    this.#applyColorChange(touch.clientX, touch.clientY, true, false);
+  }
+  
+  #applyColorChange(clientX, clientY, isAdd, isRemove) {
+    const element = document.elementFromPoint(clientX, clientY);
+    const ring = element?.closest('chainmail-ring');
+    
+    if(ring) {
+      if(isAdd) {
+        ring.setAttribute('color', RingLogic.colorOnClick);
+      } else if (isRemove) {
+        ring.removeAttribute('color');
+      }
+    }
   }
   
   #getRowMarginTop() {

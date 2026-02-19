@@ -147,28 +147,16 @@ class RingComponent extends HTMLElement {
     
     this.addEventListener('click', this.handleClick);
     this.addEventListener('contextmenu', this.handleContextMenu);
-    this.addEventListener('mouseover', this.handleMouseOver);
   }
   
   handleClick() {
+    event.preventDefault();
     this.setAttribute('color', RingLogic.colorOnClick);
   }
   
   handleContextMenu() {
     event.preventDefault();
-    this.removeAttribute('color', RingLogic.colorOnClick);
-  }
-  
-  handleMouseOver(event) {
-    event.preventDefault();
-
-    if(event.buttons === 1) {            
-      this.setAttribute('color', RingLogic.colorOnClick);
-    }
-    
-    if(event.buttons === 2) {
-      this.removeAttribute('color', RingLogic.colorOnClick);
-    }
+    this.removeAttribute('color');
   }
   
   #getSheetAttribute(attribute) {
