@@ -11,4 +11,12 @@ Todos:
   - add recent color history to color pickers
   - dry up the color options
   - fix overflow clipping
+  - random color option (question mark icon)
   - consider scrollable max-height for layer list
+  - sheet alignment
+  - fit-to-screen zoom
+  - address mobile pinch-to-zoom
+  - reset sheet colors
+  - fix layer list in light mode
+  - sheet opacity (active vs inactive)
+  - fullscreen
