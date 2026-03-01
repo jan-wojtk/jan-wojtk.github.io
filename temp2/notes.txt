@@ -1,0 +1,23 @@
+Todos:
+  - X enforce reasonable maximums on rows & columns (prevent page freeze)
+  - X consider moving rows and columns inputs adjacent to each other, for space
+  - X mobile tap-and-drag to color rings
+  - / improve mobile form UX (set default zoom to 100 when on vertical mobile?)
+  - sortable layers
+  - stats: total ring count of sheet
+  - stats: total wire length of sheet
+  - stats: height and width of sheet
+  - save-to-session behavior
+  - add recent color history to color pickers
+  - dry up the color options
+  - fix overflow clipping
+  - random color option (question mark icon)
+  - consider scrollable max-height for layer list
+  - sheet alignment
+  - fit-to-screen zoom
+  - address mobile pinch-to-zoom
+  - reset sheet colors
+  - fix layer list in light mode
+  - sheet opacity (active vs inactive)
+  - fullscreen
+  - share to copy link
