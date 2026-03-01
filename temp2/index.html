@@ -46,6 +46,12 @@
             background: #333333;
           }
           
+          #chainmail-sheet-container {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+          }
+          
           #input-overlay {
             height: 100%;
             position: absolute;
@@ -53,98 +59,83 @@
             z-index: 9999999;
           }
           
-          #input-overlay__chainmail-sheet-list {
-            bottom: .25em;
+          #input-overlay .button-list {
             display: flex;
             flex-direction: column;
-            left: .25em;
             list-style-type: none;
             margin: 0;
             padding: 0;
             position: fixed;
           }
           
-          #input-overlay__chainmail-sheet-list li {
-            background: #cccccc;
+          #input-overlay  .button-list > li {
+            align-items: center;
             border: 2px solid #666666;
             border-radius: 3px;
             display: flex;
-            align-items: center;
             justify-content: center;
-            height: 2em;
-            margin: .25em;
             padding: 0;
-            width: 2em;
+            margin: .25em;
+          }
+          
+          #input-overlay .button-list > li > button {
+            font-size: 1.5rem;
+            height: 2.5rem;
+            margin: 0;
+            padding: 0;
+            width: 2.5rem;
+          }
+          
+          #input-overlay__chainmail-sheet-list__properties {
+            bottom: 2.95em;
+            left: 3.25em;
+          }
+          
+          #input-overlay__chainmail-sheet-list > li:nth-child(1)::after {
+            display: block;
+            content: "\25B8";
+            position: absolute;
+            right: -13px;
+          }
+          
+          #input-overlay__chainmail-sheet-list {
+            bottom: .25em;
+            left: .25em;
           }
           
           #input-overlay___settings {
             position: fixed;
             top: .5em;
             right: .5em;
-            height: 2.5em;
-            width: 2.5em;
-          }
-          
-          #input-overlay___settings > button {
-            font-size: 1.5em;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            width: 100%;
           }
           
           #input-overlay__actions {
             bottom: .25em;
-            display: flex;
-            flex-direction: column;
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            position: fixed;
             right: .25em;
-          }
-          
-          #input-overlay__actions li {
-            background: #cccccc;
-            border: 2px solid #666666;
-            border-radius: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 2em;
-            margin: .25em;
-            padding: 0;
-            width: 2em;
-          }
-          
-          #input-overlay__actions li span {
-            font-size: .75em;
-          }
-          
-          #chainmail-sheet-container {
-            display: table-cell;
-            text-align: center;
-            vertical-align: middle;
           }
         </style>
     </head>
     <body class="dark-mode">
       <div id="input-overlay">
-        <ol id="input-overlay__chainmail-sheet-list">
-          <li>&harr;</li>
-          <li>&varr;</li>
-          <li>&ocir;</li>
-          <li>&#x1FAA3;</li>
-          <li><span>+</span></li>
+        <ol id="input-overlay__chainmail-sheet-list" class="button-list">
+          <li><button style="background: #f4a460;"></button></li>
+          <li><button>+</button></li>
         </ol>
         
-        <div id="input-overlay___settings">
-          <button>&#x26ED;</button>
-        </div>
+        <ol id="input-overlay__chainmail-sheet-list__properties" class="button-list">
+          <li><button>&harr;</button></li>
+          <li><button>&varr;</button></li>
+          <li><button>&ocir;</button></li>
+          <li><button>&#x1FAA3;</button></li>
+        </ol>
         
-        <ol id="input-overlay__actions">
-          <li><span>&#x1F589;</span></li>
-          <li><span>&#x270B;</span></li>
+        <ol id="input-overlay___settings" class="button-list">
+          <li><button>&#x26ED;</button></li>
+        </ol>
+        
+        <ol id="input-overlay__actions" class="button-list">
+          <li><button>&#x1F589;</button></li>
+          <li><button>&#x270B;</button></li>
         </ol>
       </div>
       <div id="chainmail-sheet-container">
