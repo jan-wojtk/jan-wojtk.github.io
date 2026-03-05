@@ -94,22 +94,56 @@
             }
 
             body > main {
-              height: 40%;
+              height: 72.5%;
               width: 100%;
             }
             
             body > chainmail-form {
               border-left: 0;
               border-top: 3px solid #cccccc;
-              height: 60%;
+              height: 27.5%;
               padding-top: 1em;
               width: 100%;
             }
           }
+          
+          .button-list {
+            display: flex;
+            flex-direction: row;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+          }
+
+          .button-list > li {
+            align-items: center;
+            border: 5px solid #666666;
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            margin: .25em;
+          }
+
+          .button-list > li > button {
+            background: transparent;
+            border: 0;
+            color: #cccccc;
+            cursor: pointer;
+            font-size: 1.5em;
+            height: 2.5em;
+            margin: 0;
+            padding: 0;
+            width: 2.5em;
+          }
+          
+          .button-list > li > button > span {
+            font-size: .75em;
+          }
         </style>
     </head>
     <body class="dark-mode">
-      <main style="zoom: 2;">        
+      <main style="zoom: 1.5;">        
         <div id="stat-overlay" class="stat-overlay" hidden>
           <div class="stat-overlay__credit-card">
             Standard credit card width

@@ -9,36 +9,27 @@ class LayerFormComponent extends BaseComponent {
   
   get template() {
     const layerList = LayerLogic.GetLayerList();
+    const sheetList = layerList.map(x => this.#getLayerSheet(x.id));
+    console.log(sheetList);
     const isSingleLayer = layerList.length === 1;
-    const collapseIcon = this.#collapsed ? '&#x25B6;' : '&#x25BC;';
     
     return `
-      <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
-        <legend>
-          <button class="chainmail-form__collapse"><span class="chainmail-form__collapse__icon" style="vertical-align: ${this.#collapsed ? 'top' : 'middle'};">${collapseIcon}</span> Layer</button>
-        </legend>
-        <table>
-          <tbody>
-            ${
-              layerList.map((l, index) => `
-                <tr class="layer-table__layer ${this.#activeLayer === l.id ? 'layer-table__layer--active' : ''}" data-layer="${l.id}">
-                  <td class="layer-table__visibility ${l.hidden ? 'layer-table__visibility--hidden' : ''}"><button title="show/hide">&#x1F441;</button></td>
-                  <td class="layer-table__name"><button>${l.name}</button></td>
-                  <td class="layer-table__remove"><button ${isSingleLayer ? 'disabled' : ''}>&#10006;</button></td>
-                </tr>
-              `).join('')
-            }
-            <tr>
-              <td id="layer-table__add-new" colspan="3">
-                <button style="border-right: 0px; border-top: 1px solid #eeeeee; padding: 10px; text-align: center;">
-                  &plus; Add New Layer
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </fieldset>
+      <ol class="button-list">
+        <li id="layer-table__add-new"><button style="background: transparent; color: #cccccc;">+</button></li>
+        ${sheetList.map((s, index) => `
+          <li><button style="background: ${s.getAttribute('color')};"></button></li>
+        `).join('')}
+      </div>
     `;
+    /*
+    return layerList.map((l, index) => `
+      <tr class="layer-table__layer ${this.#activeLayer === l.id ? 'layer-table__layer--active' : ''}" data-layer="${l.id}">
+        <td class="layer-table__visibility ${l.hidden ? 'layer-table__visibility--hidden' : ''}"><button title="show/hide">&#x1F441;</button></td>
+        <td class="layer-table__name"><button>${l.name}</button></td>
+        <td class="layer-table__remove"><button ${isSingleLayer ? 'disabled' : ''}>&#10006;</button></td>
+      </tr>
+    `).join('');
+    */
   }
   
   

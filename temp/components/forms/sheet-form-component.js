@@ -16,7 +16,7 @@ class SheetFormComponent extends BaseComponent {
   
   get styles() {
     return `
-      chainmail-sheet-form .color-list {
+      .color-list {
         display: flex;
         flex-wrap: wrap;
         list-style-type: none;
@@ -24,7 +24,7 @@ class SheetFormComponent extends BaseComponent {
         padding: 0;
       }
       
-      chainmail-sheet-form .color-list > li {
+      .color-list > li {
         border: 1px solid #cccccc;
         border-radius: 3px;
         height: 20px;
@@ -33,7 +33,7 @@ class SheetFormComponent extends BaseComponent {
         width: 20px;
       }
       
-      chainmail-sheet-form .color-list > li > button {
+      .color-list > li > button {
         border: 0;
         height: 100%;
         margin: 0;
@@ -54,11 +54,7 @@ class SheetFormComponent extends BaseComponent {
     const sheetRows = sheet.getAttribute(SheetComponent.attributeNames.rows);
     const sheetColor = sheet.getAttribute(SheetComponent.attributeNames.color);
     
-    return `
-      <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
-        <legend>
-          <button class="chainmail-form__collapse"><span class="chainmail-form__collapse__icon" style="vertical-align: ${this.#collapsed ? 'top' : 'middle'};">${collapseIcon}</span> Sheet</button>
-        </legend>
+    return `-
         <label for="chainmail-form__weave">Weave</label>
         <select id="chainmail-form__weave">
           ${
@@ -85,9 +81,6 @@ class SheetFormComponent extends BaseComponent {
               .map(x => `<li><button data-color="${x}" style="background-color: ${x};"></button></li>`).join('')
           }
         </ol>
-        
-        <br />
-      </fieldset>
     `;
   }
   

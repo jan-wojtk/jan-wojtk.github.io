@@ -42,38 +42,30 @@ class RingFormComponent extends BaseComponent {
     
     const collapseIcon = this.#collapsed ? '&#x25B6;' : '&#x25BC;';
     return `
-      <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
-        <legend>
-          <button class="chainmail-form__collapse"><span class="chainmail-form__collapse__icon" style="vertical-align: ${this.#collapsed ? 'top' : 'middle'};">${collapseIcon}</span> Ring</button>
-        </legend>
-        
-        <label for="chainmail-form__aspect-ratio">Inner Diameter / Gauge (mm)</label>
-        <select id="chainmail-form__aspect-ratio">
-          ${Object.keys(validRingTypesByInnerDiameter).map(innerDiameter => `
-            <optgroup label="${innerDiameter}mm">
-              ${validRingTypesByInnerDiameter[innerDiameter].map(ring => `                
-                <option
-                  data-awg="${ring.gauge.awg}"
-                  data-inner-diameter="${innerDiameter}"
-                  title="Aspect Ratio ${ring.aspectRatio}"
-                  ${ring.gauge.awg == currentAwg && innerDiameter == currentInnerDiameter ? 'selected' : ''}
-                >${innerDiameter}mm / ${ring.gauge.awgGauge} (${ring.gauge.mm})</option>
-              `).join('')}
-            </optgroup>
-          `).join('')}
-        </select>
-        
-        <label for="chainmail-ring-form__color">Color (on click)</label>
-        <input id="chainmail-ring-form__color" type="color" value="${RingLogic.colorOnClick}"/>
-        <ol class="color-list">
-          ${
-            ['#ffff19', '#daa520', '#f4a460', '#ffd700', '#f5f5f5', '#f1a886']
-              .map(x => `<li><button data-color="${x}" style="background-color: ${x};"></button></li>`).join('')
-          }
-        </ol>
-        
-        <br />
-      </fieldset>
+      <label for="chainmail-form__aspect-ratio">Inner Diameter / Gauge (mm)</label>
+      <select id="chainmail-form__aspect-ratio">
+        ${Object.keys(validRingTypesByInnerDiameter).map(innerDiameter => `
+          <optgroup label="${innerDiameter}mm">
+            ${validRingTypesByInnerDiameter[innerDiameter].map(ring => `                
+              <option
+                data-awg="${ring.gauge.awg}"
+                data-inner-diameter="${innerDiameter}"
+                title="Aspect Ratio ${ring.aspectRatio}"
+                ${ring.gauge.awg == currentAwg && innerDiameter == currentInnerDiameter ? 'selected' : ''}
+              >${innerDiameter}mm / ${ring.gauge.awgGauge} (${ring.gauge.mm})</option>
+            `).join('')}
+          </optgroup>
+        `).join('')}
+      </select>
+      
+      <label for="chainmail-ring-form__color">Color (on click)</label>
+      <input id="chainmail-ring-form__color" type="color" value="${RingLogic.colorOnClick}"/>
+      <ol class="color-list">
+        ${
+          ['#ffff19', '#daa520', '#f4a460', '#ffd700', '#f5f5f5', '#f1a886']
+            .map(x => `<li><button data-color="${x}" style="background-color: ${x};"></button></li>`).join('')
+        }
+      </ol>
     `;
   }
   

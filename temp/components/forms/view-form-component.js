@@ -38,36 +38,30 @@ class ViewFormComponent extends BaseComponent {
     const collapseIcon = this.#collapsed ? '&#x25B6;' : '&#x25BC;';
     
     return `
-      <fieldset class="${this.#collapsed ? 'collapsed' : ''}">
-        <legend>
-          <button class="chainmail-form__collapse"><span class="chainmail-form__collapse__icon" style="vertical-align: ${this.#collapsed ? 'top' : 'middle'};">${collapseIcon}</span> View</button>
-        </legend>
-        
-        <label><input id="chainmail-form__stat-overlay" type="checkbox" />Credit Card Overlay</label>
-        
-        <label><input id="chainmail-form__dark-mode" type="checkbox" checked />Dark Mode</label>
-        
-        <br />
-        
-        <label for="chainmail-form__zoom">Zoom</label>
-        <input
-          id="chainmail-form__zoom"
-          list="chainmail-form__zoom-datalist"
-          type="range"
-          min="50"
-          max="300"
-          step="5"
-          value="200"
-        />
-        <datalist id="chainmail-form__zoom-datalist">
-          <option value="50" label="50"></option>
-          <option value="100" label="100"></option>
-          <option value="150" label="150"></option>
-          <option value="200" label="200"></option>
-          <option value="250" label="250"></option>
-          <option value="300" label="300"></option>
-        </datalist>
-      </fieldset>
+      <label><input id="chainmail-form__stat-overlay" type="checkbox" />Credit Card Overlay</label>
+      
+      <label><input id="chainmail-form__dark-mode" type="checkbox" checked />Dark Mode</label>
+      
+      <br />
+      
+      <label for="chainmail-form__zoom">Zoom</label>
+      <input
+        id="chainmail-form__zoom"
+        list="chainmail-form__zoom-datalist"
+        type="range"
+        min="50"
+        max="300"
+        step="5"
+        value="200"
+      />
+      <datalist id="chainmail-form__zoom-datalist">
+        <option value="50" label="50"></option>
+        <option value="100" label="100"></option>
+        <option value="150" label="150"></option>
+        <option value="200" label="200"></option>
+        <option value="250" label="250"></option>
+        <option value="300" label="300"></option>
+      </datalist>
     `;
   }
   
