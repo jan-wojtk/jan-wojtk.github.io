@@ -1,7 +1,10 @@
+Refactor guidance: Form field registers change => Logic changes state => State triggers listeners => Chainmail listeners update views
+
 Todos:
   - X enforce reasonable maximums on rows & columns (prevent page freeze)
   - X consider moving rows and columns inputs adjacent to each other, for space
   - X mobile tap-and-drag to color rings
+  - X fix overflow clipping
   - / improve mobile form UX (set default zoom to 100 when on vertical mobile?)
   - sortable layers
   - stats: total ring count of sheet
@@ -10,7 +13,6 @@ Todos:
   - save-to-session behavior
   - add recent color history to color pickers
   - dry up the color options
-  - fix overflow clipping
   - random color option (question mark icon)
   - consider scrollable max-height for layer list
   - sheet alignment
@@ -20,3 +22,4 @@ Todos:
   - fix layer list in light mode
   - sheet opacity (active vs inactive)
   - fullscreen
+  - share to copy link

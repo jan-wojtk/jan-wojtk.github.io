@@ -3,11 +3,12 @@ class BaseComponent extends HTMLElement {
   // ✅ a name to be used as prefixes
   // ✅ a template to be rendered
   // ✅ a stylesheet to be rendered
-  // attributes
-  // attributes that trigger style rerender
-  // attributes that trigger template rerenders
-  // attributes that should be used for render cacheing
+  // ✅ state events
+  // state events that trigger style rerender
+  // state events that trigger template rerenders
+  // state values that should be used for render cacheing
   connectedCallback() {
+    this.registerStateEventListeners();
     this.renderStyles();
     this.renderTemplate();
   }
@@ -34,11 +35,11 @@ class BaseComponent extends HTMLElement {
   renderStyles() {
     const parser = new DOMParser();
     const existingStyles = document.getElementById(this.#stylesId);
-    const newStyles = parser.parseFromString(
-      `<style id="${this.#stylesId}">
+    const newStyles = parser.parseFromString(`
+      <style id="${this.#stylesId}">
         ${this.styles}
-      </style>`
-    , 'text/html').head.children[0];
+      </style>
+    `, 'text/html').head.children[0];
     
     if(existingStyles) {
       existingStyles.replaceChild(newStyles);
@@ -61,6 +62,12 @@ class BaseComponent extends HTMLElement {
         ev.element.addEventListener(ev.event, ev.handler);
       if(ev.elements?.length > 0) // Notably, don't use Array.isArray here because NodeList isn't an array
         ev.elements.forEach(el => el.addEventListener(ev.event, ev.handler));
+    });
+  }
+  
+  registerStateEventListeners() {
+    this.eventListeners.filter(ev => ev.state).forEach(ev => {
+      ev.state.addEventListener(ev.event, ev.handler);
     });
   }
 }

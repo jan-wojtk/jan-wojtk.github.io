@@ -2,129 +2,89 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
         <script src="models/ring.js"></script>
         <script src="models/gauge.js"></script>
         <script src="models/weave.js"></script>
-        <script src="models/layer.js"></script>
+        <script src="models/sheet.js"></script>
+        
+        <script src="state/sheet-state.js"></script>
         
         <script src="logic/gauge-logic.js"></script>
         <script src="logic/ring-logic.js"></script>
         <script src="logic/european-four-in-one-logic.js"></script>
         <script src="logic/european-six-in-one-logic.js"></script>
         <script src="logic/weave-logic.js"></script>
-        <script src="logic/layer-logic.js"></script>
+        <script src="logic/sheet-logic.js"></script>
         
         <script src="components/base-component.js"></script>
-        
         <script src="components/ring-component.js"></script>
         <script src="components/sheet-component.js"></script>
-        
-        <script src="components/forms/layer-form-component.js"></script>
-        <script src="components/forms/sheet-form-component.js"></script>
-        <script src="components/forms/ring-form-component.js"></script>
-        <script src="components/forms/view-form-component.js"></script>
-        <script src="components/forms/form-component.js"></script>
+        <script src="components/chainmail-sheets-component.js"></script>
+        <script src="components/fields/sheet-fields-component.js"></script>
         
         <style>
-          body {
-            display: flex;
-            flex-direction: row;
+          html, body {
             font-family: sans-serif;
-            height: 100vh;
+            height: 100%;
             padding: 0;
             margin: 0;
-            overflow-x: hidden;
             width: 100%;
           }
-
-          body > chainmail-form {
-            border-left: 1px solid #cccccc;
-            box-sizing: border-box;
-            height: 100%;
-            min-width: 220px;
-            order: 2;
-            overflow: auto;
-            padding: 10px;
-            width: 20%;
-          }
-
-          body > main {
-            align-items: center;
+          
+          body {
+            background: #e8e8e8;
             display: flex;
-            flex-grow: 1;
-            height: 100%;
-            justify-content: center;
-            order: 1;
-            overflow: auto;
-            position: relative;
+            flex-direction: row;
           }
           
           body.dark-mode {
             background: #333333;
           }
           
-          body.dark-mode label, body.dark-mode legend {
-            color: #eeeeee !important;
+          #chainmail-sheet-section {
+            flex-grow: 1;
+            overflow: scroll;
+            scrollbar-width: thin;
           }
           
-          body.dark-mode chainmail-ring, body.dark-mode chainmail-ring .ring-partial .ring {
-            outline-color: #666666;
+          .dark-mode #chainmail-sheet-section {          
+            scrollbar-color: #777777 #444444;
           }
           
-          #stat-overlay {
-            bottom: 10px;
-            color: #aaaaaa;
-            font-size: .8em;
-            left: 10px;
-            position: absolute;
+          #chainmail-sheet-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
           }
           
-          .stat-overlay__credit-card {
-            border: 1px solid #aaaaaa;
-            border-top: 0;
-            box-sizing: border-box;
-            padding-left: 5px;
-            user-select: none;
-            width: 86.2mm;
+          #chainmail-field-section {
+            
+          }
+          
+          #chainmail-field-container {
+            
           }
           
           @media (width <= 775px) {
             body {
-              flex-wrap: wrap;
-            }
-
-            body > main {
-              height: 40%;
-              width: 100%;
-            }
-            
-            body > chainmail-form {
-              border-left: 0;
-              border-top: 3px solid #cccccc;
-              height: 60%;
-              padding-top: 1em;
-              width: 100%;
+              flex-direction: column;
             }
           }
         </style>
     </head>
     <body class="dark-mode">
-      <main style="zoom: 2;">        
-        <div id="stat-overlay" class="stat-overlay" hidden>
-          <div class="stat-overlay__credit-card">
-            Standard credit card width
-          </div>
+      <section id="chainmail-sheet-section">
+        <div id="chainmail-sheet-container" style="zoom: 2;">
+          <chainmail-sheets></chainmail-sheets>
         </div>
-        <chainmail-sheet
-          color="#f4a460"
-          rows="11"
-          columns="21"
-          awg="18"
-          inner-diameter="4"
-          weave="European Four-In-One"
-          layer="1"
-        ></chainmail-sheet>
-      </main>
-      <chainmail-form></chainmail-form>
+      </section>
+      <section id="chainmail-field-section">
+        <div id="chainmail-field-container">
+          <chainmail-sheet-fields></chainmail-sheet-fields>
+        </div>
+      </section>
     </body>
 </html>
